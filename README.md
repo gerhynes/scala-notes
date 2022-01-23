@@ -557,3 +557,57 @@ val aPhoneBook: Map[String, Int] = Map(
 	"Jane" -> 187327063 // equivalent to ("Jane", 187327063)
 )
 ```
+
+## Pattern Matching
+Pattern matching is a mechanism for checking a value against a pattern. It's comparable to a switch statement in Java and can be used instead of a series of if/else statements. Think of it as a switch expression.
+
+Pattern matching will try all cases in sequence.
+
+`_` serves as the catch all case. Cases are also called alternatives.
+
+```Scala
+val anInteger = 55
+
+val order = anInteger match {
+	case 1 => "first"  
+	case 2 => "second"  
+	case 3 => "third"  
+	case _ => anInteger + "th"
+}
+```
+
+Pattern matching can also deconstruct data structures into their constituent parts.
+
+One of the benefits of case classes is being able to deconstruct them in pattern matching. Pattern matching can also be used for normal classes but requires much more work.
+
+```Scala
+case class Person(name: String, age: Int)
+val bob = Person("Bob", 43) // equivalent to Person.apply("Bob", 43)
+
+val personGreeting = bob match {  
+	case Person(n, a) => s"Hi, my name is $n and I am $a years old." 
+	case _ => "Something else"  
+}
+```
+
+Pattern matching can also deconstruct tuples.
+
+```Scala
+val aTuple = ("Bon Jovi", "Rock")  
+val bandDescription = aTuple match {  
+	case (band, genre) => s"$band belongs to the genre $genre"  
+	case _ => "I don't know what you're talking about"  
+}
+```
+
+You can also decompose lists using pattern matching.
+
+```Scala
+val aList = List(1,2,3)  
+val listDescription = aList match {  
+	case List(_, 2, _) => "List containing 2 in index 1"  
+	case _ => "unknown list"  
+}
+```
+
+If a pattern match doesn't match anything it'll thorw a MatchError so it's good practice to include a catch all case. 
