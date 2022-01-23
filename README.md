@@ -367,8 +367,193 @@ Scala is marketed as a mix of object-oriented and functional programming. It is 
 
 When you define an object that extends `App` you are inheriting from the App type's ``main`` method.
 
+Methods on objects are similar to Java static methods. So you already have a static main method implemented by extending App. This is what makes them runnable.
+
 ```Scala
 object ObjectOrientation extends App {...}
 ```
 
-Methods on objects are similar to Java static methods. So you already have a static main method implemented by extending App. This is whta makes them runnable.
+## Functional Programming
+Scala is an object-oriented language and runs on the JVM. The JVM knows what an object is but doesn't know what a function is as a first class citizen.
+
+In functional programming the goal is to work with functions as with any other kind of value:
+- compose functions
+- pass functions as arguments
+- return functions as results
+
+To gte the JVM to work with functional programming, Scala's creators created the concept FunctionX.
+
+When you create an object that can be invoked like a function (because it has an apply method), and the only thing it supports is to be invoked like a function, you've essentially defined a function. It acts like a function and the only thing it can do is act like a function.
+
+All Scala functions are instances of these FunctionX types.
+
+FunctionX = Function1, Function2 ... Function22. 
+
+22 is the maximum number of arguments you can pass to a function. The last argument passed to it is the return type.
+
+```Scala
+val simpleIncrementor = new Function1[Int, Int] {
+	override def apply(arg: Int): Int = arg + 1
+}
+
+simpleIncrementor.apply(23) // 24
+simpleIncrementor(23) // 24 - same as calling apply
+
+// function with 2 arguments and String return type
+val stringConcatenator = new Function2[String, String, String] {
+	override def apply(arg1: String, arg2: String): String = arg1 + arg2
+}
+
+stringConcatenator("Woo ", "Scala") // Woo Scala
+```
+
+### Syntactical Sugar
+Syntactical sugar is alternative syntax that replaces more verbose boilerplate code.
+
+For example, a function that takes in an int and doubles it can be written as:
+
+```Scala
+val doubler: Int => Int = (x: Int) => 2 * x
+// or
+val doubler = (x: Int) => 2 * x // compiler infers type
+
+doubler(4) // 8
+```
+
+This is equivalent to:
+
+```Scala
+val doubler: Function1[Int, Int] = new Function1[Int, Int] {
+	override def apply(x: Int) = 2 * x
+}
+```
+
+### Higher-Order Functions
+Methods that take functions as arguments or return functions as results are called higher-order functions.
+
+For example, when working with Lists, the `map` method takes an anonymous function (lambda) as its argument. The function is applied to every element in the List.
+
+The `flatMap` method concatenates any Lists produced by the anonymous function and raturns a bigger list.
+
+The `filter` method takes an anonymous function and returns only those elements for which the condition evaluates as true. 
+
+You can chain, map, flatMap and filter.
+
+These methods let you iterate through collections without using loops or iterators.
+
+```Scala
+// map
+val aMappedList: List[Int] = List(1,2,3).map(x => x + 1) // List(2,3,4)
+
+// flatMap
+val aFlatMappedList = List(1,2,3).flatMap(x => List(x, 2 * x)) // List(1,2,2,4,3,6)
+
+// Alternative syntax
+val aFlatMappedList = List(1,2,3).flatMap {x => 
+	List(x, 2 * x)
+} // List(1,2,2,4,3,6)
+
+// filter
+val aFilteredList = List(1,2,3,4,5).filter(x => x <= 3) // List(1,2,3)
+
+// Alternative syntax
+val aFilteredList = List(1,2,3,4,5).filter(_ <= 3) // List(1,2,3)
+
+// All pairs between numbers 1,2,3 and letters 'a', 'b', 'c'
+val allPairs = List(1,2,3).flatMap(number => List('a','b','c').map(letter => s"$number-$letter")) // List(1-a, 1-b, 1-c, 2-a, 2-b, 2-c, 3-a, 3-b, 3-c)
+
+```
+
+### For Comprehensions
+
+Instead of using chains of higher-order functions, you can use a for comprehension, which can be reduced to a single value. The compiler will interpret it as a chain.
+
+```Scala
+// chain
+val allPairs = List(1,2,3).flatMap(number => List('a','b','c').map(letter => s"$number-$letter"))
+
+// for comprehension
+val alternativePairs = for {
+	number <- List(1,2,3)
+	letter <- List('a', 'b', 'c')
+}   yield s"$number-$letter" 
+```
+
+## Collections
+### Lists
+
+Lists are the fundamental collection in functional programming.
+
+A list has a head (the first element) and a tail (the remainder of the list).
+
+Lists can be prepended and appended with elements.
+
+`+:` prepends an element
+`:+` appends an element
+
+```Scala
+val aList = List(1,2,3,4,5)
+val firstElement = aList.head
+val rest = aList.tail
+val aPrependedList = 0 :: aList
+val anExtendedList = 0 +: aList :+ 6
+```
+
+### Sequences
+
+A sequence is a collection where you can access an element at a given index.
+
+`Seq` is a Trait
+
+```Scala
+val aSequence = Seq[Int] = Seq(1,2,3) // Seq.apply(1,2,3)
+val accessedElement = aSequence(1) // the element at that index - 2
+```
+
+### Vectors
+Vectors are indexed, immutable sequences with very fast access times and the same methods as Lists and Sequences.
+
+```Scala
+val aVector = Vector(1,2,3,4,5)
+```
+
+### Sets
+Sets are collections with no duplicates. The main use of a Set is to test whether an element is contained in the Set, using the `contains` method. The order of the elements is not important.
+
+You can add or remove elements with the `plus` and `minus` methods.
+
+```Scala
+val aSet = Set(1,2,3,4,1,2,3) // Set(1,2,3,4)
+val setHas5 = aSet.contains(5) // false
+val anAddedSet = aSet + 5 // Set(1,2,3,4,5)
+val aRemovedSet = aSet - 3 // Set(1,2,4,5)
+```
+
+### Ranges
+Ranges are used for iteration. For example, the following range doesn't contain all the nunbers from 1 to 1000 but it can be processed as if it did.
+
+```Scala
+val aRange = 1 to 1000
+
+// will generate a list of all even numbers between 2 and 2000
+val twoByTwo = aRange.map(x => 2 * x).toList
+```
+
+You can use the `toList`, `toSet`, `toSeq` methods to convert between these collections.
+
+### Tuples
+Tuples are a simple container for disparate items.
+
+```Scala
+val aTuple = ("Bon Jovi", "Rock", 1982)
+```
+
+### Maps
+A Map is an iterable sequence that consists of pairs of keys and values.
+
+```Scala
+val aPhoneBook: Map[String, Int] = Map(
+	("Daniel", 034937846),
+	"Jane" -> 187327063 // equivalent to ("Jane", 187327063)
+)
+```
