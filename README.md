@@ -611,3 +611,202 @@ val listDescription = aList match {
 ```
 
 If a pattern match doesn't match anything it'll thorw a MatchError so it's good practice to include a catch all case. 
+
+## More Advanced Features
+### Lazy Evaluation
+Lazy evaluation means an expression is not evaluated until it's first used. It's useful ininfinite collections.
+
+```Scala
+lazy val aLazyValue = 2  
+lazy val lazyValueWithSideEffect = {  
+  println("I am so very lazy!")  
+  43  
+}
+
+val eagerValue = lazyValueWithSideEffect + 1 // lazyValueWithSideEffect used, code block triggered
+```
+
+### "Pseudo Collections"
+
+`Option` and `Try` are useful when you have unsafe methods, for example saving you from having to check for the method returning a Null value.
+
+An Option is like a "collection" containing at most one element. 
+
+For example, you can pass a method which can return Null to Option. If the method returns a valid value, then the "collection" contains that value. It'll return ``Some``, a subtype of Option.
+
+If the method returns Null, the value will be ``None`` (a singleton object and still a valid value).
+
+You can used Options with pattern matching and operate on them with map, flatMap and filter.
+
+```Scala
+def methodWhichCanReturnNull(): String = "Hello, Scala"  
+val anOption = Option(methodWhichCanReturnNull()) // Some("Hello, Scala")  
+// option = "collection" which contains at most one element: Some(value) or None
+
+val stringProcessing = anOption match {  
+	case Some(string) => s"I have obtained a valid string: $string"  
+	case None => "I obtained nothing"  
+}
+```
+
+A Try guards against methods which can throw exceptions, avoiding having to write defensive try/catch blocks. 
+
+It's essentially a "collection" with either a value if the code went well, or an exception if the code threw one. The two subtypes of Try are `Success` and `Failure`.
+
+The Try object can also be processed with map, flatMap and filter.
+
+```Scala
+def methodWhichCanThrowException(): String = throw new RuntimeException  
+val aTry = Try(methodWhichCanThrowException())  
+
+val anotherStringProcessing = aTry match {  
+	case Success(validValue) => s"I have obtained a valid string: $validValue"  
+	case Failure(ex) => s"I have obtained an exception: $ex"  
+}
+```
+
+
+### Asynchronous Programming
+asynchronous programming in Scala is done with another pseudo-collection, `Future`. 
+
+A Future represents a value which may or may not _currently_ be available, but will be available at some point, or an exception if that value could not be made available.
+
+```Scala
+val aFuture = Future { // equivalent to Future.apply()
+  println("Loading...")  
+  Thread.sleep(1000)  
+  println("I have computed a value.")  
+  67  
+}
+```
+
+In order to run a future, you need to import an execution context, for example `global`. The global value is a collection of threads on which you can schedule the evaluation of an expression.
+
+A Future is a "collection" which contains a value when it's evaluated.
+
+A Future is composable with map, flatMap and filter simialr to other pseudo-collections.
+
+Future, Try and Option are "Monads" in functional programming.
+
+### Implicits
+Implicits are used for 
+- implicit arguments
+- implicit conversions
+
+If you define a method with implicit arguments you can call it without passing any arguments. The compiler understands that the method takes an implicit argument and looks for implicit values.
+
+```Scala
+def aMethodWithImplicitArgs(implicit arg: Int) = arg + 1  
+implicit val myImplicitInt = 46  
+println(aMethodWithImplicitArgs)  // aMethodWithImplicitArgs(myImplicitInt)
+```
+
+You use implicit conversions to add methods to existing types over which you don't have control.
+
+For example, you can give an Int an isEven method using implicit conversion.
+
+This is dangerous. Use it carefully.
+
+```Scala
+implicit class MyRichInteger(n: Int) {  
+	def isEven() = n % 2 == 0  
+}  
+  
+println(23.isEven()) // equivalent to new MyRichInteger(23).isEven()
+```
+
+## Contextual Abstractions (Scala 3)
+### Context Parameters/Arguments
+Scala's compiler sorts a list by accessing the built-in value of the trait  `Ordering[Int]`.
+
+The `sorted` method takes an argument list but that argument list contains an element of type `Ordering[Int]`. This element is contextual and depends on where the method is being called.
+
+For every method that takes a "magical" argument of type `Ordering[Int]`, the compiler looks for a `given` instance.
+
+Depending on the `given` instances that you define in the scope of a method with these kinds of arguments, you can change the built-in behaviour of the method.
+
+```Scala
+val aList = List(2,1,4,3)
+
+// customize sorted to be descending
+val anOrderedList = aList.sorted // contextual argument: (descendingOrdering)
+
+// Ordering
+given descendingOrdering: Ordering[Int] = Ordering.fromLessThan(_ > _) // (a,b) => a > b
+```
+
+A given instance is analogous to an implicit val.
+
+**NB** Implicits are going to be deprecated in future versions of Scala 3.
+
+A contextual argument can be specified using the `using` keyword. The compiler will look for a given instance.
+
+```Scala
+trait Combinator[A] { // monoid
+	def combine(x: A, y: A): A
+}
+
+def combineAll[A](list: List[A])(using combinator: Combinator[A]): A = list.reduce((a,b) => combinator.combine(a,b))
+
+given intCombinator: Combinator[Int] = new Combinator[Int] {
+
+override def combine(x: Int, y: Int) = x + y
+
+}
+
+val theSum = combineAll(aList) // (intCombinator)
+```
+
+The compiler looks for given instances in:
+- the local scope
+- the imported scope
+- the companions of all the types involved in the method call
+
+In this instance the compiler will look in the companion of List and the companion of Int.
+
+### Context Bounds
+There are shorter syntaxes available for contextual arguments.
+
+If you're not using the instance directly but are calling other methods that use it, you can use `using` and you don't need to name the particular instance.
+
+You can alternatively specify a type restriction. This alerts the compiler that you need an instance in scope where this method is going to be called.
+
+```Scala
+def combineAll_v2[A](list: List[A])(using Combinator[A]): A = ???
+
+def combineAll_v3[A : Combinator](list: List[A]): A = ???
+```
+
+Context arguments are useful for:
+- type classes
+- dependency injection
+- context-dependent functionality
+- type-level programming
+
+### Extension Methods
+
+You can add additional methods to a type after it was defined even if you have no control over the source of that type.
+
+Extension methods are heavily used in functional programming libraries, such as Cats.
+
+You can use the `extension` keyword to add extensions to a type.
+
+```Scala
+case class Person(name: String) {
+	def greet(): String = s"Hi, my name is $name, I love Scala!"
+}
+
+extension (string: String)
+	def greet(): String = new Person(string).greet()
+
+val danielsGreeting = "Daniel".greet() // "type enrichment"
+```
+
+Extension methods can be combined with context parameters.
+
+```Scala
+extension [A] (list: List[A])
+	def combineAllValues(using combinator: Combinator[A]): A = list.reduce(combinator.combine)
+
+val theSum_v2 = aList.combineAllValues
+```
