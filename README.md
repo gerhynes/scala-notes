@@ -14,13 +14,15 @@ By making an object extend `App`, it becomes executable as a standalone applicat
 object Basics extends App { ... }
 ```
 
+### Values and Variables
+
 When defining a value, you use the `val` keyword for immutable values, then the name of the value and its type, before assigning it.
 
 ```Scala
 val meaningOfLife: Int = 42
 ```
 
-A value is comparable to a constant in Java. Reassigning to a `val` is illegal.
+A value is comparable to a constant in Java. Reassigning to a `val` is illegal because `val`s are immutable.
 
 You don't always need to specify the type as the compiler can often infer the type.
 
@@ -46,9 +48,30 @@ Strings can also be interpolated using `s""` and `$`.
 val interpolatedString = s"The meaning of life is $meaningOfLife"
 ```
 
+Variables, defined with `var`, are used for side effects in Scala. Variables are mutable. Scala prefers vals over vars.
+
+```Scala
+var aVariable: Int = 4  
+  
+aVariable = 5 // side effects
+```
+
+The `+= -= *= /=` operators only work with variables.
+
+```Scala 
+var aVariable = 2  
+aVariable += 3 // also works with -= *= /= ..... side effects
+```
+
+### Expressions
+
 With Scala, you need to think in terms of values and expressions, rather than instructions. 
 
+An instruction is something you tell the computer to do.
+
 Expressions are structures that can be reduced to a value. Values are composed to obtain new values. 
+
+Instructions are executed (Java), expressions are evaluated (Scala).
 
 In Scala, everything is an expression that can be reduced to a value.
 
@@ -68,7 +91,15 @@ val chainedExpression =
 	else 0
 ```
 
-A code block is defined by curly braces. These can contain local values and nested code blocks but must eventually return a value (the last expression of the code block). The compiler will assign a type to the code block.
+A code block is an expression defined by curly braces. 
+
+These can contain local values and nested code blocks but must eventually return a value. 
+
+The value of a code block is the value of its last constituent expression.
+
+The compiler will assign a type to the code block.
+
+Code blocks have their own scope and can have values only available inside them.
 
 ```Scala
 val aCodeBlock = {
@@ -78,6 +109,8 @@ val aCodeBlock = {
 	aLocalValue + 3
 }
 ```
+
+### Functions
 
 Functions are defined with the keyword `def`, take any arguments, specify a return type, and contain a single expression, which is the return value of the function.
 
@@ -93,15 +126,34 @@ def myFunction(x: Int, y: String): String = {
 }
 ```
 
-Functions are often recursive in practice, often replacing loops or iteration (which are discouraged).
+Functions are often recursive in practice, often replacing loops or iteration (which are discouraged in Scala).
+
+It's good practice to specify the return types of functions (even when the compiler can infer them). Recursive functions need to have an explicit return type.
 
 ```Scala
 def factorial(n: Int): Int = 
 	if (n <= 1) 1
 	else n * factorial(n - 1)
+
+def aRepeatedFunction(aString: String, n: Int): String = {  
+	if (n == 1) aString  
+	else aString + aRepeatedFunction(aString, n-1)  
+}
 ```
 
-The `Unit` return type is used when you have no meaningful value, equivalent to using `void` in other languages. The `Unit` type is the type of **side effects**, operations whihc have nothing to do with computing meaningful information, for example printing something on screen, sending something to a socket or server, storing something in a file.
+You can define auxiliary functions inside functions.
+
+```Scala
+def aBigFunction(n: Int): Int = {  
+	def aSmallerFunction(a: Int, b: Int): Int = a + b  
+  
+	aSmallerFunction(n, n-1)  
+}
+```
+
+The `Unit` type is used when your function returns no meaningful value, equivalent to using `void` in other languages. 
+
+The `Unit` type is the type of **side effects**, operations which have nothing to do with computing meaningful information, for example printing something on screen, sending something to a socket or server, storing something in a file.
 
 ```Scala 
 // returns type Unit
@@ -114,6 +166,33 @@ def myUnitReturningFunction(): Unit = {
 
 // Unit can be represented by ()
 val theUnit = ()
+```
+
+### Type Inference
+When you don't specify a type for a value, the compiler will infer the type and add it behind the scenes.
+
+```Scala
+val message = "hello world" // String
+
+val x = 2 // Int
+
+val y = x + "items" // String
+```
+
+The compiler can also infer the return type for functions and add it.
+
+If you do specify a type, make sure you comply with it or you'll get a type mismatch error.
+
+```Scala
+def success(x: Int) = x + 1 // def success(x: Int): Int = x + 1
+```
+
+The compiler can't infer the type of a recursive functions and so this must be made explicit.
+
+```Scala
+def factorial(n: Int): Int =  
+	if (n <= 0) 1  
+	else n * factorial(n-1)
 ```
 
 ## Object-Oriented Programming
