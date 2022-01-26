@@ -252,6 +252,40 @@ calledByValue(System.nanoTime())
 calledByName(System.nanoTime())
 ```
 
+### Default and Named Arguments
+In some cases you will write functions that will be called with the same parameters almost all the time.
+
+Scala lets you set default values for parameters that you don't want to pass every time.
+
+```Scala
+def trFact(n: Int, acc: Int = 1): Int =  
+ if (n <= 1) acc  
+ else trFact(n-1, n*acc)  
+  
+val fact10 = trFact(10, 2) // you can override default values
+```
+
+Leading values with default parameters can't be ommitted. It will confuse the compiler.
+
+Either:
+
+1. Pass in every leading argument.
+2. Name the arguments.
+
+```Scala
+def savePicture(format: String = "jpg", width: Int = 1920, height: Int = 1080): Unit = println("saving picture")
+
+savePicture(800) // which paramter are you referring to?
+savePicture("png") // this works
+savePicture(width = 800) // this works
+```
+
+If you name arguments, you can pass them in in a different order.
+
+```Scala
+savePicture(height = 600, width = 800, format = "png")
+```
+
 ## Object-Oriented Programming
 Scala is an object-oriented language with classes that can be instantiated.
 
