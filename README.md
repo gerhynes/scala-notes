@@ -286,6 +286,50 @@ If you name arguments, you can pass them in in a different order.
 savePicture(height = 600, width = 800, format = "png")
 ```
 
+### String Operations
+
+Scala has access to the Java String class and its methods, such as  `charAt`, `split`, `replace`. 
+
+Besides this, Scala has its own utilities.
+
+You can convert a string to an integer using `toInt`.
+
+You can prepend to a string with `+:` and append with `:+`.
+
+`take` lets you acces a certain number of characters from a string.
+
+```Scala
+val aNumberString = "2"  
+val aNumber = aNumberString.toInt  
+println('a' +: aNumberString :+ 'z')  
+println(str.reverse)  
+println(str.take(2))
+```
+
+You can interpolate a value into a string using `s"$valueName"` and an expression using `s"${}"`.
+
+```Scala
+val greeting = s"Hello, my name is $name and I am $age years old"val anotherGreeting = s"Hello, my name is $name and I will be turning ${age + 1} years old."
+```
+
+F-interpolators are for formatted strings, similar to `printf`. For example `%2.2f` to show at least 2 characters and to 2 decimals precision.
+
+```Scala
+val speed = 1.2f  
+val myth = f"$name can eat $speed%2.2f burgers per minute"  
+println(myth)
+```
+
+Raw interpolated strings ignore escaped characters inside raw strings but injected variables do get escaped.
+
+```Scala
+println(raw"This is a \n newline")  // This is a \n newline
+
+val escaped = "This is a \n newline"
+println(raw"$escaped") // This is a 
+											 // newline
+```
+
 ## Object-Oriented Programming
 Scala is an object-oriented language with classes that can be instantiated.
 
