@@ -195,6 +195,40 @@ def factorial(n: Int): Int =
 	else n * factorial(n-1)
 ```
 
+### Recursion
+In order to run a recursive function, the JVM uses a call stack to keep partial results. Each call uses a stack frame. 
+
+The JVMs internal stack has limited memory and a StackOverflowError will happen when the recursive depth is exceeded.
+
+```Scala
+def factorial(n: Int): Int =  
+ if (n <= 1) 1  
+ else {  
+    println("Computing factorial of " + n + " - I first need factorial of " + (n-1))  
+    val result = n * factorial(n-1)  
+    println("Computed factorial of " + n)  
+  
+    result  
+ }
+```
+
+You can avoid a StackOverFlowError using tail recursion. Scala doesn't need to save intermediate results for use later, it uses an accumulator. This lets Scala preserve the same stack frame and not use additional stack frames for recursive calls.
+
+You can annotate functions with `@tailrec` and the compiler will complain if they don't use tail recursion.
+
+```Scala
+def anotherFactorial(n: Int): BigInt = {  
+	@tailrec  
+	def factHelper(x: Int, accumulator: BigInt): BigInt =  
+		if (x <= 1) accumulator  
+		else factHelper(x - 1, x * accumulator) // TAIL RECURSION = use recursive call as the LAST expression  
+  
+	factHelper(n, 1)  
+}
+```
+
+When you need loops, use tail recursion.
+
 ## Object-Oriented Programming
 Scala is an object-oriented language with classes that can be instantiated.
 
