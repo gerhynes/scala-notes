@@ -229,6 +229,29 @@ def anotherFactorial(n: Int): BigInt = {
 
 When you need loops, use tail recursion.
 
+### Call By Name and Call By Value
+
+In call by value, the exact value of a parameter is computed before the function is evaluated and the same value is used in the function definition no matter how many times the function is called.
+
+By contrast, in call by name, the parameter is passed literally as is and the expression is evaluated every time it is used when the function runs.
+
+To call a parameter by name, use `=>`. This is useful in lazy streams and things that might fail.
+
+```Scala
+def calledByValue(x: Long): Unit = {  
+  println("by value: " + x)  // println("by value: " + 1257387745764245L)
+  println("by value: " + x)  // println("by value: " + 1257387745764245L)
+}  
+  
+def calledByName(x: => Long): Unit = {  
+  println("by name: " + x)  // println("by name: " + System.nanoTime())
+  println("by name: " + x)  // println("by name: " + System.nanoTime())
+}
+
+calledByValue(System.nanoTime())  
+calledByName(System.nanoTime())
+```
+
 ## Object-Oriented Programming
 Scala is an object-oriented language with classes that can be instantiated.
 
