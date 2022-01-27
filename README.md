@@ -413,9 +413,71 @@ val john = new Person("John")
 val bobbie = Person(mary, john)
 ```
 
-A Scala application is a Scala object that either:
+Since a Scala application has to run on the JVM, a Scala application is a Scala object that either:
 - has a main method: `def main(args: Array[String]): Unit`
-- extends App (wich already has a main method): `object Person extends App {...}`
+- extends App (which already has a main method): `object Person extends App {...}`
+
+### Inheritance
+
+Scala has single class inheritance. 
+
+The subclass only inherits non-private members of the superclass.
+
+```Scala
+class Animal {  
+	val creatureType = "wild"  
+	def eat = println("nomnom")  
+}  
+  
+class Cat extends Animal {  
+	def crunch = {  
+	  eat  
+		println("crunch crunch")  
+  }  
+}
+```
+
+### Constructors
+
+When you instantiate a subclass, the JVM first calls the constructor of its parent class.
+
+The Scala compiler forces you to guarantee that there is a correct super constructor to call when using a derived class.
+
+If you use an auxiliary constructor, you can also specify that in the extends clause.
+
+```Scala
+class Person(name: String, age: Int) {  
+	def this(name: String) = this(name, 0) // auxiliary constructor
+}  
+class Adult(name: String, age: Int, idCard: String) extends Person(name)
+```
+
+### Overriding
+
+Overriding works for both methods and vals. You can override fields in the class body or directly in the constructor arguments.
+
+All instances of derived classes will use the overriden member whenever possible.
+
+You can use `super` to reference a method or field from a parent class.
+
+```Scala
+class Dog(override val creatureType: String) extends Animal {  
+  // override val creatureType = "domestic" // can override in the body or directly in the constructor arguments  
+	override def eat = {  
+	  super.eat  
+		println("crunch, crunch")  
+  }  
+}
+
+val dog = new Dog("domestic") // overrides creatureType
+dog.eat  
+println(dog.creatureType)
+```
+
+There are cases when you want to limit overriding of fields/methods:
+1. use `final` on a member  `final def eat = println("nomnom")`
+2. use `final` on the entire class `final class Animal {...}`
+3. seal the class. You can extend classes in this file, but it prevents extension in other files `sealed class Animal {...}`
 
 ### Subtype Polymorphism
 
