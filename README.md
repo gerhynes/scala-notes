@@ -339,9 +339,9 @@ A class doesn't have to have a body.
 
 You can pass arguments to a class and they will be passed to its constructor.
 
-Constructor arguments are not fields and are not available outside the class definition.
+Constructor arguments (class parameters) are not fields and are not available outside the class definition. Constructor arguments can be converted to fields using `val`.
 
-Constructor arguments can become fields using `val`.
+At every instantiation of a class, its entire code block will be evaluated. Every expression within and all side effects will be executed.
 
 ```Scala
 class Animal {
@@ -356,9 +356,31 @@ val aDog = new Dog("Lassie")
 aDog.name // won't compile
 
 class Cat(val name: String) extends Animal
-val aCat = new Dog("Minxie")
+val aCat = new Cat("Minxie")
 aCat.name // will compile
+```
 
+The `this` keyword refers to the particular instance. Any time you reference an object's field, `this` is implied.
+
+If you have a method parameter with the same value as a field, you'll need to use `this` to distinguish them.
+
+```Scala
+def greet(): Unit = println(s"Hi, I'm $name") // println(s"Hi, I'm $this.name")
+
+def greet(name: String): Unit = println(s"this.name says hi, $name")
+
+val person = new Person("John")
+person.greet("Daniel")
+```
+
+Scala supports multiple constructors. The only thing an auxilary constructor can do is to call another constructor (primary or secondary), so they can essentially be avoided by providing default parameters.
+
+```Scala
+class Person(Name: String, age: Int) {
+
+// auxiliary constructor - calls primary constructor
+def this(name: String) = this(name, 0)
+}
 ```
 
 ### Subtype Polymorphism
@@ -416,9 +438,11 @@ class Crocodile extends Animal with Carnivore {
 }
 ```
 
-### Methods and Method Naming
+### Method Notations and Method Naming
 
-Methods that have a single argument can be written using infix notation: `object method argument`.
+Method notation is a form of syntactic sugar to make Scala more closely resemble natural language.
+
+Methods that have a single parameter can be called using infix notation / operator notation: `object method argument`.
 
 ```Scala
 val aCroc = new Crocodile
@@ -426,7 +450,7 @@ aCroc.eat(aDog)
 aCroc eat aDog // infix notation
 ```
 
-Scala is quite permissive with method naming, for example, `?!` is a valid method name. `?` and `!` are often used in Akka.
+Scala is quite permissive with method naming. For example, `+` or `?!` are valid method names. `?` and `!` are often used in Akka.
 
 ```Scala
 trait Philosopher {
@@ -439,6 +463,29 @@ Operators in Scala are actually methods. For example, the `+` operator is actual
 ```Scala
 val basicMath = 1 + 2
 val moreBasicMath = 1.+(2)
+```
+
+Scala also has prefix notation. Unary operators are actually methods with `unary_` prefixed to them.
+
+The `unary_` prefix only works with `-` , `+`, `~` and `!`.
+
+```Scala
+val x = -1 // equivalent to 1.unary_-
+val y = 1.unary_-
+```
+
+Methods that don't receive any parameters can be used with postfix notation. This can, however, introduce ambiguities when reading the code.
+
+```Scala
+println(Mary.isAlive)
+println(Mary isAlive)
+```
+
+`apply` as a method name has special properties in Scala. Whenever the compiler sees an object being called like a function, it looks for a definition of `apply` in that class.
+
+```Scala
+mary.apply() 
+mary() // these are equivalent
 ```
 
 ### Anonymous Classes
