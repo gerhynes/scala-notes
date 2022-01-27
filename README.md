@@ -604,7 +604,13 @@ mary() // these are equivalent
 
 ### Anonymous Classes
 
-Scala has anonymous classes. You can implement a trait as long as you immediately implement its abstract methods.
+Scala has anonymous classes, which let you instantiate types and override fields and methods on the spot.
+
+They also effectively let you instantiate abstract classes. 
+
+You can implement a trait as long as you immediately implement its abstract fields and methods. 
+
+If your anonymous class is extending a class, you need to provide the proper constructor arguments (if needed).
 
 ```Scala
 trait Carnivore {
