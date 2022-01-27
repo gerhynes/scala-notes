@@ -383,6 +383,12 @@ def this(name: String) = this(name, 0)
 }
 ```
 
+### Access Modifiers
+
+All fields and methods are by default public. You can restrict them using the `private` or `protected` keywords.
+
+A `private` member or method is only accessible by the class. `Protected` means that a class and all its descendents have access to the field or method.
+
 ### Objects
 
 Scala does not have class-level functionality. It doesn't know the concept of "static". A Scala object can, however, have static-like functionality.
@@ -494,26 +500,24 @@ aDeclaredAnimal.eat() // the most derived method will be called at runtime
 
 ### Abstract Classes
 
-Scala has abstract classes, where all fields and methods don't necessarily need to have implementation. Whatever class implements the abstract class will ned to provide an implementation of the methods.
+Scala has abstract classes, where all fields and methods don't necessarily need to have implementation. Abstract classes can have both sbstract and non-abstract members.
+
+Whatever class implements the abstract class will need to provide an implementation of the abstract methods.
+
+Abstract classes cannot be instantiated, they are made to be extended later.
 
 ```Scala
 abstract class WalkingAnimal {
 	protected val hasLegs = true // by default public
-	def walk(): Unit
+	def walk(): Unit // to be implemented in concrete class
 }
 ```
 
-### Access Modifiers
-
-All fields and methods are by default public. You can restrict them using the `private` or `protected` keywords.
-
-A `private` member or method is only accessible by the class. `Protected` means that a class and all its descendents have access to the field or method.
-
 ### Traits (Interfaces)
 
-Scala also has interfaces, traits, for the ultimate abstract type, where everyhting is unimplemented. 
+Scala also has traits, for the ultimate abstract type, where everything is unimplemented. 
 
-You **can** provide implementation in traits but they are usually used to denote characteristics of objects that can later be implemented in concrete classes.
+Traits can have both abstract and non-abstract members. You **can** provide implementation in traits but they are usually used to denote characteristics of objects that can later be implemented in concrete classes.
 
 ```Scala
 trait Carnivore {
@@ -521,11 +525,11 @@ trait Carnivore {
 }
 ```
 
-Scala offers single-class inheritance and multi-trait inheritance. 
+Scala offers single-class inheritance but multi-trait inheritance. 
 
 If a concrete class implements a trait with abstract methods, those methods need to be implemented or the subclass needs to be declared abstract itself.
 
-When you implement a method that's also present in a supertpe, it's an `override`.
+When you implement a method that's also present in a supertype, it's an `override`.
 
 ```Scala
 // single-class inheritance and multi-trait "mixing"
@@ -533,6 +537,20 @@ class Crocodile extends Animal with Carnivore {
 	override def eat(animal: Animal): Unit = println("Eating an animal")
 }
 ```
+
+Traits differ from abstract classes in the following ways:
+1. traits do not have constructor parameters (in Scala 2)  
+2. multiple traits may be inherited by the same class  
+3. traits describe "behavior", abstract classes describe a "thing"
+
+### Scala's Type Hierarchy
+
+Scala's type hierarchy starts with `scala.Any`, then `scala.AnyRef` (mapped to java.lang.Object). All classes (for example, String, List, Set) will derive from `AnyRef` unless you explicitly say they extend some other class. Derived from all of these is `scala.Null` (its only instance is the null reference).
+
+`scala.AnyVal` derives from `scala.Any` and contain all the primitive values (Int, Unit, Boolean, Float).
+
+Derived from all of them is `scala.Nothing`, in the sense that nothing is a subtype of every single thing in Scala and can replace everything.
+
 
 ### Method Notation and Method Naming
 
@@ -684,6 +702,8 @@ try {
 ```
 
 ### Generics
+Generics are a method to use to same code to handle many (potentially unrelated) types.
+
 Generics let you pass a type (denoted by a single letter) to a class or trait. Inside you can have definitions that depend on this type.
 
 When you later use the class, the type becomes concrete.
@@ -703,6 +723,92 @@ val rest = aList.tail
 
 val aStringList = List("Hello", "world")
 val firstString = aStringList.head // String
+```
+
+You can have multiple type parameters, for example `class MyMap[Key, Value]`.
+
+Traits can also be type paramaterized but objects cannot.
+
+### Generic Methods
+
+Methods can take a type paramater and then a concrete argument when called.
+
+```Scala
+object MyList {
+	def empty[A]: MyList[A] = ???
+}
+
+val emptyInteherList = MyList.empty[Int]
+```
+
+### Variance Problem
+Say you have an animal clas that is extended by Cat and Dog classes.
+
+Does a list of Cat also extend a List of Animal?
+
+There are 3 possible answers:
+- yes - covariance (use `+` before the type parameter)
+- no - invariance (use no operator with the type parameter)
+- hell no - contravariance (use `-` before the type parameter)
+
+```Scala
+class Animal  
+class Cat extends Animal  
+class Dog extends Animal  
+  
+// 1. yes, List[Cat] extends List[Animal] = COVARIANCE  
+class CovariantList[+A]  
+val animal: Animal = new Cat  
+val animalList: CovariantList[Animal] = new CovariantList[Cat]  
+// animalList.add(new Dog) ??? HARD QUESTION => we return a list of Animals  
+  
+// 2. NO = INVARIANCE  
+class InvariantList[A]  
+val invariantAnimalList: InvariantList[Animal] = new InvariantList[Animal]  
+  
+// 3. Hell, no! CONTRAVARIANCE  
+class Trainer[-A]  
+val trainer: Trainer[Cat] = new Trainer[Animal]
+```
+
+### Bounded Types
+
+Bounded types let you use your generic classes only for certain types that are either a subclass of a different type, using `<:`, or a superclass of a different type, using `>:`.
+
+```Scala
+class Cage[A <: Animal](animal: A)  
+val cage = new Cage(new Dog)  
+  
+class Car  
+// generic type needs proper bounded type - Car not subclass of Animal
+//  val newCage = new Cage(new Car)
+```
+
+Bounded types let you solve one variance problem. 
+
+You can specify that if a supertype is added to a list of subtypes, the entire list becomes a list of supertypes.
+
+```Scala
+class MyList[+A] {  
+  // use the type A  
+	def add[B >: A](element: B): MyList[B] = ???  
+	/*  
+	A = Cat 
+	B = Animal 
+	*/
+}
+```
+
+Similarly, `Nothing` is a proper substitute for any type and so can be used for an empty collection.
+
+```Scala
+object Empty extends MyList[Nothing] {
+	def head: Nothing = throw new NoSuchElementException  
+	def tail: MyList[Nothing] = throw new NoSuchElementException  
+	def isEmpty: Boolean = true  
+	def add[B >: Nothing](element: B): MyList[B] = new Cons(element, Empty)  
+	def printElements: String = ""
+}
 ```
 
 ### Immutability
