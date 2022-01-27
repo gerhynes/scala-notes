@@ -383,6 +383,40 @@ def this(name: String) = this(name, 0)
 }
 ```
 
+### Objects
+
+Scala does not have class-level functionality. It doesn't know the concept of "static". A Scala object can, however, have static-like functionality.
+
+Objects are defined similarly to classes but do not receive parameters. An object can have values and method definitions.
+
+A Scala object is a singleton instance. When you define an object, you define its type and its only instance.
+
+In practice, you will write objects and classes with the same name in the same scope: this is to seperate instance functionality and class-level functionality. 
+
+You will always be accessing code from an instance, either a regular instance or the singleton instance.
+
+In objects, you will often have factory methods to build these objects.
+
+```Scala
+object Person { // type + its only instance  
+ // "static"/"class" - level functionality 
+	val N_EYES = 2  
+	def canFly: Boolean = false  
+  
+	// factory method  
+	def apply(mother: Person, father: Person): Person = new Person("Bobbie")  
+}
+
+val mary = new Person("Mary")
+val john = new Person("John")
+
+val bobbie = Person(mary, john)
+```
+
+A Scala application is a Scala object that either:
+- has a main method: `def main(args: Array[String]): Unit`
+- extends App (wich already has a main method): `object Person extends App {...}`
+
 ### Subtype Polymorphism
 
 Scala has subtype polymorphism.
@@ -438,7 +472,7 @@ class Crocodile extends Animal with Carnivore {
 }
 ```
 
-### Method Notations and Method Naming
+### Method Notation and Method Naming
 
 Method notation is a form of syntactic sugar to make Scala more closely resemble natural language.
 
