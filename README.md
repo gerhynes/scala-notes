@@ -674,20 +674,37 @@ val animalsCanLiveForever = Animal.canLiveIndefinitely // similar to static fiel
 ```
 
 ### Case Classes
-Case classes are lighweight data structures with some boilerplate.
+Case classes are lighweight data structures with little boilerplate.
 
-When you define a case class, the compiler automatically generates 
+They let you define a class, a companion object and a lot of sensible default in one go.
+
+When you define a case class, the compiler automatically generates: 
 - a sensible equals and hashcode (for inclusion into various collections that rely on equality).
 - sensible and quick serialization
-- companion with apply
+- a companion object with `apply`
 - pattern matching
+
+With case classes:
+- class parameters are promoted to fields
+- a sensible `toString` method is provided
+- printing an instance automatically delegates to `toString` 
+- the `copy` method (which can take named parameters) creates a new instance
+
+Case classes are serializable which is useful when dealing with distributed systems. This is heavily used by Akka.
+
+Case classes have extractor patterns and can be used in pattern matching.
 
 ```Scala
 case class Person(name: String, age: Int)
 
 // new keyword can be ommitted because of companion
 val bob = Person("Bob", 54) // equivalent to Person.apply("Bob, 54")
+println(bob.name)
+println(bob) // Person(Bob, 54)
 ```
+
+There are also case objects, which have the same properties as case classes except they don't get companion objects (they are their own companion object).
+
 
 ### Exceptions
 
