@@ -705,6 +705,43 @@ println(bob) // Person(Bob, 54)
 
 There are also case objects, which have the same properties as case classes except they don't get companion objects (they are their own companion object).
 
+### Enums (Scala 3)
+
+Enums are a data type you can define much like a class, where you can enumerate all the possible caes (constants) of that type. 
+
+An enum is a sealed data type that cannot be extended.
+
+Enums can have fields and methods, can take constructor arguments, and can have companion objects.
+
+You can use an enum's companion object as a source for factory methods.
+
+```Scala
+enum Permissions {
+	case RAED, WRITE, EXECUTE, NONE
+
+	def openDocument(): Unit = 
+		if (this == READ) println("Opening document...")
+		else println("Reading not allowed")
+}
+
+val somePermissions: Permissions = Permissions.READ
+
+enum PermissionsWithBits(bits: Int) {
+	case READ extends PermissionsWithBits(4) // 100
+	case WRITE extends PermissionsWithBits(2) // 010
+	case EXECUTE extends PermissionsWithBits(1) // 001
+	case NONE extends PermissionsWithBits(0) // 000
+}
+
+object PermissionsWithBits {
+	def fromBits(bits: Int): PermissionsWithBits = ???
+	PermissionsWithBits.NONE
+}
+
+def main(args: Array[String]): Unit = {
+	somePermissions.openDocument()
+}
+```
 
 ### Exceptions
 
