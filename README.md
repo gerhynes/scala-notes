@@ -745,20 +745,42 @@ def main(args: Array[String]): Unit = {
 
 ### Exceptions
 
+In Scala throwing an exception is an expression which returns `Nothing`.
+
+Exceptions are instances of classes. For example, when you throw a `NullPointerException` you are instantiating an instance of `NullPointerException` and then throwing it. 
+
+Exceptions (and Errors) are throwable beacuse they extend the `Throwable` class.
+
+An Exception denotes something that went wrong with the program, for example `NullPointerException`. Errors denote something that went wrong with the system, for example a `StackOverflow` error.
+
+```Scala
+val aWeirdValue = throw new NullPointerException
+```
+
 Exceptions are treated as special ojects by the JVM and are handled using a try catch block, with an optional finally clause that will execute no matter what. 
 
-The finally clause is useful for closing connections or releasing resources that would otherwise be dangerous to leave open.
+The finally clause is used for side effects, for example closing connections or releasing resources that would otherwise be dangerous to leave open.
+
+Like everything in Scala, a try catch finally block is an expression. The compiler will attempt to unify the types of values returned and will use  `AnyVal` if the values returned from the try and catch blocks are different.
 
 ```Scala
 try {
-	// code that can throw
+	// code that can throw an exception
 	val x: String = null
 	x.length
 } catch {
-	case e: Exception => "Some error message"
+	case e: Exception => println("Some error message")
 } finally {
 	// Executes no matter what
 }
+```
+
+Exceptions in Scala come from Java and are specific to the JVM, not to Scala.
+
+Custom exceptions can be treated like other classes, they can have class parameters, fields and methods. Usually all will need is a name and a `printStackTrace` utility method.
+
+```Scala
+class MyException extends Exception
 ```
 
 ### Generics
