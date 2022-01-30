@@ -783,6 +783,61 @@ Custom exceptions can be treated like other classes, they can have class paramet
 class MyException extends Exception
 ```
 
+### Packaging and Imports
+A package is a number of definitions grouped under the same name. This almost always matches the directory structure.
+
+Members within a package are visible using their simple name.
+
+If accessing a member from a different package, you need to either import the package or use the full qualified name.
+
+```Scala
+import playground.Cinderella
+
+val princess = new Cinderella
+
+val princess = new playground.Cinderella // fully qualified class name
+```
+
+Packages are ordered hierarchically and this maps the folder structure in the filesystem: `lectures.part2oop.OOBasics`.
+
+### Package Objects
+
+A package object originated form the desire to write methods or constants outside of everything else, for example universal utility methods or constants.
+
+There can only be one package object per package and its name is the same as the package. The filename is `package.scala`.
+
+Methods and constants defined in the package object can be used by their simple name in the rest of the package.
+
+Package object are relatively rarely used but can be quite handy.
+
+```Scala
+package object part2oop {
+	def sayHello: Unit = println("Hello world")
+
+	val SPEED_OF_LIGHT = 299792458
+}
+```
+
+### Imports
+Your IDE will group imports together. If this gets too long, you can use `packageName._` to import everything from that package.
+
+You can do name aliasing during imports, which can be useful if you're importing more than one class with the same name from different packages.
+
+If two import have the same name, the compiler will assume that you are referencing the first import.
+
+```Scala
+import playground.{PrinceCharming, Cinderella => Princess}
+// or
+import playground._
+```
+
+Default imports are packages that are imported without any intentional import by you.
+
+For example: 
+- java.lang - String, Object, Exception  
+- scala - Int, Nothing, Function  
+- scala.Predef - println, ???
+
 ### Generics
 Generics are a method to use to same code to handle many (potentially unrelated) types.
 
