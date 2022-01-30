@@ -981,7 +981,9 @@ In functional programming the goal is to work with functions as with any other k
 - pass functions as arguments
 - return functions as results
 
-To gte the JVM to work with functional programming, Scala's creators created the concept FunctionX.
+To get the JVM to work with functional programming, Scala's creators created the concept FunctionX.
+
+All Scala functions are objects.
 
 When you create an object that can be invoked like a function (because it has an apply method), and the only thing it supports is to be invoked like a function, you've essentially defined a function. It acts like a function and the only thing it can do is act like a function.
 
@@ -1007,15 +1009,15 @@ val stringConcatenator = new Function2[String, String, String] {
 stringConcatenator("Woo ", "Scala") // Woo Scala
 ```
 
-### Syntactical Sugar
-Syntactical sugar is alternative syntax that replaces more verbose boilerplate code.
+### Function Types
+Scala supports these function types out of the box.
 
 For example, a function that takes in an int and doubles it can be written as:
 
 ```Scala
-val doubler: Int => Int = (x: Int) => 2 * x
+val doubler: Int => Int = (x: Int) => 2 * x // specifying function type
 // or
-val doubler = (x: Int) => 2 * x // compiler infers type
+val doubler = (x: Int) => 2 * x // compiler infers function type
 
 doubler(4) // 8
 ```
@@ -1028,8 +1030,30 @@ val doubler: Function1[Int, Int] = new Function1[Int, Int] {
 }
 ```
 
+A function that takes in two arguments of type String and concatenates them to return a value of type String (that is, an example of Function2), could be written as:
+
+```Scala
+def concatenator: (String, String) => String = new Function2[String, String, String] {  
+  override def apply(a: String, b: String): String = a + b  
+}  
+println(concatenator("Hello ", "Scala"))
+```
+
 ### Higher-Order Functions
-Methods that take functions as arguments or return functions as results are called higher-order functions.
+Functions that either take functions as parameters or return functions as results are called higher-order functions.
+
+This `superAdder` function is a curried function, meaning it can be called with multiple parameter lists. This is because it receives a parameter and returns another function which also receives a parameter. 
+
+```Scala
+// takes an int as a parameter and returns a function
+val superAdder: Function1[Int, Function1[Int, Int]] = new Function1[Int, Function1[Int, Int]] {  
+  override def apply(x: Int): Function1[Int, Int] = new Function1[Int, Int] {  
+    override def apply(y: Int): Int = x + y  
+ }  
+}
+
+println(superAdder(3)(4)) // curried function
+```
 
 For example, when working with Lists, the `map` method takes an anonymous function (lambda) as its argument. The function is applied to every element in the List.
 
