@@ -1137,13 +1137,17 @@ println(standardFormat(Math.PI)) // 3.14
 println(preciseFormat(Math.PI)) // 3.14159265
 ```
 
-For example, when working with Lists, the `map` method takes an anonymous function (lambda) as its argument. The function is applied to every element in the List.
+### map, flatMap and filter
+
+Scala Lists have several useful methods, including: `map`, `flatMap` and `filter`.
+
+The `map` method takes an anonymous function (lambda) as its argument and this function is applied to every element in the List.
 
 The `flatMap` method concatenates any Lists produced by the anonymous function and raturns a bigger list.
 
 The `filter` method takes an anonymous function and returns only those elements for which the condition evaluates as true. 
 
-You can chain, map, flatMap and filter.
+You can chain, ``map``, ``flatMap`` and ``filter``.
 
 These methods let you iterate through collections without using loops or iterators.
 
@@ -1170,9 +1174,29 @@ val allPairs = List(1,2,3).flatMap(number => List('a','b','c').map(letter => s"$
 
 ```
 
+You may also see this syntax:
+
+```Scala
+val list = List(1,2,3)
+
+list.map { x =>
+	x * 2
+}
+```
+
+`forEach` is similar to `map` except that it receives a function returning Unit.
+
+```Scala
+val list = List(1,2,3)
+
+list.forEach(println)
+```
+
 ### For Comprehensions
 
 Instead of using chains of higher-order functions, you can use a for comprehension, which can be reduced to a single value. The compiler will interpret it as a chain.
+
+For comprehensions are more readable and are preferred in practice.
 
 ```Scala
 // chain
@@ -1183,6 +1207,24 @@ val alternativePairs = for {
 	number <- List(1,2,3)
 	letter <- List('a', 'b', 'c')
 }   yield s"$number-$letter" 
+```
+
+If you want to include filtering in a for comprehension, you include a guard.
+
+```Scala
+val filteredPairs = for {
+	number <- List(1,2,3) if number % 2 == 0
+	letter <- List('a', 'b', 'c')
+}   yield s"$number-$letter" 
+```
+
+You can still perform side effects with for comprehensions.
+
+```Scala
+// equivalent to using forEach
+for {
+	n <- numbers
+} println(n)
 ```
 
 ## Collections
