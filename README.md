@@ -1101,19 +1101,40 @@ listOfIntegers.flatMap(elem => new Cons(elem, new Cons(elem + 1, Empty))).toStri
 ```
 
 ### Higher-Order Functions
-Functions that either take functions as parameters or return functions as results are called higher-order functions.
+Functions that either take functions as parameters or return functions as results are called higher-order functions (HOFs).
+
+```Scala
+val superFunction: (Int, (String, (Int => Boolean)) => Int) => (Int => Int) = ???
+```
 
 This `superAdder` function is a curried function, meaning it can be called with multiple parameter lists. This is because it receives a parameter and returns another function which also receives a parameter. 
 
 ```Scala
-// takes an int as a parameter and returns a function
+// what is actually going on
 val superAdder: Function1[Int, Function1[Int, Int]] = new Function1[Int, Function1[Int, Int]] {  
   override def apply(x: Int): Function1[Int, Int] = new Function1[Int, Int] {  
     override def apply(y: Int): Int = x + y  
  }  
 }
 
+// written functionally
+val superAdder: Int => (Int => Int) = (x: Int) => (y: Int) => x + y
+
 println(superAdder(3)(4)) // curried function
+```
+
+You can define a function with multiple parameter lists to act like curried functions.
+
+You need to specify their function type.
+
+```Scala
+def curriedFormatter(c: String)(x: Double): String = c.format(x)
+
+val standardFormat: (Double => String) = curriedFormatter("%4.2f")
+val preciseFormat: (Double => String) = curriedFormatter("%10.0f")
+
+println(standardFormat(Math.PI)) // 3.14
+println(preciseFormat(Math.PI)) // 3.14159265
 ```
 
 For example, when working with Lists, the `map` method takes an anonymous function (lambda) as its argument. The function is applied to every element in the List.
