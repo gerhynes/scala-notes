@@ -1039,6 +1039,67 @@ def concatenator: (String, String) => String = new Function2[String, String, Str
 println(concatenator("Hello ", "Scala"))
 ```
 
+### Anonymous Functions
+
+Instantiating a function is still tied to object-oriented programming. The syntax for anonymous functions (lambdas) lets you be more concise and functional.
+
+Anonymous functions consist of `paramaters => expression`, the return type is always inferred. 
+
+If you specify the funtion type, you don't need to specify the parameter and return types (since you have already).
+
+```Scala
+val doubler = new Function1[Int, Int] {
+	override def apply(x: Int) = x * 2
+}
+
+// can be written as 
+val doubler = (x: Int) => Int = x * 2
+
+// If you specify the function type, you don't need to specify the parameter and return types
+val doubler: Int => Int = x => x * 2
+```
+
+If you have multiple parameters in a lambda, you have to put them between parentheses.
+
+```Scala
+val adder = (a: Int, b: Int) => a + b
+
+val adder: (Int, Int) => Int = (a: Int, b: Int) => a + b
+```
+
+If you don't have any parameters, you can just use `() =>`.
+
+```Scala
+val justDoSomething: () => Int = () => 3
+
+println(justDoSomething) // prints the function instance
+println(justDoSomething()) // calls the function and prints the return value
+```
+
+You can write lambdas with `{}`
+
+```Scala
+val stringToInt = { (str: String) =>
+	str.toInt
+}
+```
+
+You can use `_` to stand in for a parameter. This can be very useful when you're chaining higher order function calls.
+
+Each undescore stands for a different parameter so you can't use an underscore for the same parameter multiple times.
+
+The `_` is extremely contextual and you will need to tell the compiler which type to expect.
+
+```Scala
+val niceIncrementer = Int => Int = _ + 1 // equivalent to x => x + 1
+
+val niceAdder: (Int, Int) => Int = _ + _ // equivalent to (a,b) => a + b
+
+// can't replace this with underscores
+// elem used more than once
+listOfIntegers.flatMap(elem => new Cons(elem, new Cons(elem + 1, Empty))).toString
+```
+
 ### Higher-Order Functions
 Functions that either take functions as parameters or return functions as results are called higher-order functions.
 
