@@ -1228,6 +1228,41 @@ for {
 ```
 
 ## Collections
+Scala offers both mutable and immutable colections. The standard library has type definitions for immutable collections so you are using the immutable versions by default.
+
+### Immutable Collections
+
+Immutable collections are found in the `scala.collections.immutable` package.
+
+They extend in a hierarchy starting with `Traversable`, which offers methods for mapping, converting, getting size information, testing elements, folds, retrieval and string operations.
+
+`Traversable` is extended by `Iterable`, which is extended by the major collections types `Set`, `Seq` and `Map`.
+
+`Set` is extended by `HashSet` and `SortedSet`.
+
+`Map` is extended by `HashMap` and `SortedMap`.
+
+`Seq` is extended by `IndexedSeq` and `LinearSeq`. 
+
+### Mutable Collections
+Mutable collections are found in the `scala.collections.mutable` package.
+
+Their hierarchy closely mirrors immutable collections but the implementations of  `Set`, `Seq` and `Map` differ slightly.
+
+`Set` is extended by `HashSet` and `LinkedHashSet`.
+
+`Map` is extended by `HashMap` and `MultiMap`.
+
+`Seq` is extended by `IndexedSeq`, `Buffer` and `LinearSeq`. 
+
+There are also ower level implementations:
+
+`IndexedSeq` is extended by `StringBuilder` and `ArrayBuffer`.
+
+`Buffer` is extended by `ArrayBuffer` and `ListBuffer`.
+
+`LinearSeq` is extended by `LinkedList` and `MutableList`.
+
 ### Lists
 
 Lists are the fundamental collection in functional programming.
@@ -1249,7 +1284,7 @@ val anExtendedList = 0 +: aList :+ 6
 
 ### Sequences
 
-A sequence is a collection where you can access an element at a given index.
+A sequence is a collection which you can traverse in a given order and where you can access an element at a given index.
 
 `Seq` is a Trait
 
@@ -1257,6 +1292,10 @@ A sequence is a collection where you can access an element at a given index.
 val aSequence = Seq[Int] = Seq(1,2,3) // Seq.apply(1,2,3)
 val accessedElement = aSequence(1) // the element at that index - 2
 ```
+
+Indexed Sequences have the property that they can be quickly accessed (in constant time): `Vector`, `String`, `Range`.
+
+Linear Sequences don't have constant time access and only guarantee the ordering of elements: `List`, `Stream`, `Stack`, `Queue`.
 
 ### Vectors
 Vectors are indexed, immutable sequences with very fast access times and the same methods as Lists and Sequences.
