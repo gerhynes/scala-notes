@@ -1184,12 +1184,12 @@ list.map { x =>
 }
 ```
 
-`forEach` is similar to `map` except that it receives a function returning Unit.
+`foreach` is similar to `map` except that it receives a function returning Unit.
 
 ```Scala
 val list = List(1,2,3)
 
-list.forEach(println)
+list.foreach(println)
 ```
 
 ### For Comprehensions
@@ -1221,7 +1221,7 @@ val filteredPairs = for {
 You can still perform side effects with for comprehensions.
 
 ```Scala
-// equivalent to using forEach
+// equivalent to using foreach
 for {
 	n <- numbers
 } println(n)
@@ -1231,7 +1231,6 @@ for {
 Scala offers both mutable and immutable colections. The standard library has type definitions for immutable collections so you are using the immutable versions by default.
 
 ### Immutable Collections
-
 Immutable collections are found in the `scala.collections.immutable` package.
 
 They extend in a hierarchy starting with `Traversable`, which offers methods for mapping, converting, getting size information, testing elements, folds, retrieval and string operations.
@@ -1264,12 +1263,17 @@ There are also ower level implementations:
 `LinearSeq` is extended by `LinkedList` and `MutableList`.
 
 ### Lists
-
-Lists are the fundamental collection in functional programming.
+Lists are the fundamental collection in functional programming. They are immutable and extend `LinearSeq`.
 
 A list has a head (the first element) and a tail (the remainder of the list).
 
-Lists can be prepended and appended with elements.
+The `head`, `tail` and `isEmpty` methods are fast: O(1). Most other operations (`length`, `reverse`) are O(n).
+
+Lists are sealed and have two subtypes:
+- object `Nil` (empty list)
+- class `::`
+
+Lists can be prepended and appended with elements:
 
 `+:` prepends an element
 `:+` appends an element
@@ -1278,30 +1282,101 @@ Lists can be prepended and appended with elements.
 val aList = List(1,2,3,4,5)
 val firstElement = aList.head
 val rest = aList.tail
-val aPrependedList = 0 :: aList
-val anExtendedList = 0 +: aList :+ 6
+val aPrependedList = 0 :: aList // :: prepends a value
+val anExtendedList = 0 +: aList :+ 6 // +: prepends, :+ appends
+```
+
+If you want to create a list where every element has the same value, you can use a curried function `fill`: 
+
+```Scala
+val fiveApples = List.fill(5)("apple") // list of 5 "apple" strings
+```
+
+The `mkString` method lets you pretty print a list. It concatenates all the values and adds a seperator, if specified.
+
+```Scala
+println(aList.mkString("-"))
 ```
 
 ### Sequences
+Sequences are very general interfaces for data structures which you can traverse in a given order and where you can access an element at a given index.
 
-A sequence is a collection which you can traverse in a given order and where you can access an element at a given index.
+Sequences support concatenating, appending and prepending.
 
-`Seq` is a Trait
+`Seq` is a Trait. The `Seq` companion object has an `apply` factor method that can construct subclasses of Sequence.
 
 ```Scala
-val aSequence = Seq[Int] = Seq(1,2,3) // Seq.apply(1,2,3)
-val accessedElement = aSequence(1) // the element at that index - 2
+val aSequence = Seq(1,2,3,4) // Seq.apply(1,2,3,4)
+val accessedElement = aSequence(1) // the element at that index = 2
+val aLongerSequence = aSequence ++ Seq(7,6,5) 
+val aSortedSequence = aLongerSequence.sorted // List(1,2,3,4,5,6,7)
 ```
 
 Indexed Sequences have the property that they can be quickly accessed (in constant time): `Vector`, `String`, `Range`.
 
 Linear Sequences don't have constant time access and only guarantee the ordering of elements: `List`, `Stream`, `Stack`, `Queue`.
 
-### Vectors
-Vectors are indexed, immutable sequences with very fast access times and the same methods as Lists and Sequences.
+### Arrays
+Arrays in Scala are the equivalent of simple Java arrays.
+
+They can be manually constructed with predefined lengths, they are mutable, have fast indexing and are completely interoperablw with Java's native arrays.
+
+You can create an array without specifying contents using `Array.ofDim[type](numberOfElements)`. The elements will be set to their default values: 0, false, null.
 
 ```Scala
-val aVector = Vector(1,2,3,4,5)
+val numbers = Array(1,2,3,4)
+val threeElements = Array.ofDim[Int](3)
+```
+
+Since arrays are mutable, their values can be updated.
+```Scala
+val numbers = Array(1,2,3,4)
+numbers(2) = 0 // syntactical sugar for numbers.update(2,0)
+```
+
+Arrays can be converted to sequences using implicit conversion. This is how arrays have access to sequence methods like `mkString`.
+
+```Scala
+val numbersSeq: Seq[Int] = numbers
+print(numbersSeq) // WrappedArray(1,2,3,4)
+```
+
+### Vectors
+Vectors are indexed, immutable sequences with very fast access times (effectively constant) and the same methods as Lists and Sequences. They are the default implementation for immutable sequences.
+
+```Scala
+val aVector:Vector[Int] = Vector(1,2,3,4,5)
+```
+
+Vectors are efficient for large collections.
+
+```Scala
+// vectors vs lists
+val maxRuns = 1000  
+val maxCapacity = 1000000
+
+def getWriteTime(collection: Seq[Int]): Double = {  
+  val r = new Random  
+ val times = for {  
+    it <- 1 to maxRuns  
+ } yield {  
+    val currentTime = System.nanoTime()  
+    collection.updated(r.nextInt(maxCapacity), r.nextInt())  
+    System.nanoTime() - currentTime  
+ }  
+  
+  times.sum * 1.0 / maxRuns  
+}  
+  
+val numbersList = (1 to maxCapacity).toList  
+val numbersVector = (1 to maxCapacity).toVector
+
+// keeps reference to tail  
+// updating an element in the middle takes a long time
+println(getWriteTime(numbersList))  
+// depth of the tree is small  
+// needs to replace an entire 32-element chunk  
+println(getWriteTime(numbersVector))
 ```
 
 ### Sets
