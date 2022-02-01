@@ -15,7 +15,6 @@ object Basics extends App { ... }
 ```
 
 ### Values and Variables
-
 When defining a value, you use the `val` keyword for immutable values, then the name of the value and its type, before assigning it.
 
 ```Scala
@@ -64,7 +63,6 @@ aVariable += 3 // also works with -= *= /= ..... side effects
 ```
 
 ### Expressions
-
 With Scala, you need to think in terms of values and expressions, rather than instructions. 
 
 An instruction is something you tell the computer to do.
@@ -111,7 +109,6 @@ val aCodeBlock = {
 ```
 
 ### Functions
-
 Functions are defined with the keyword `def`, take any arguments, specify a return type, and contain a single expression, which is the return value of the function.
 
 ```Scala
@@ -230,7 +227,6 @@ def anotherFactorial(n: Int): BigInt = {
 When you need loops, use tail recursion.
 
 ### Call By Name and Call By Value
-
 In call by value, the exact value of a parameter is computed before the function is evaluated and the same value is used in the function definition no matter how many times the function is called.
 
 By contrast, in call by name, the parameter is passed literally as is and the expression is evaluated every time it is used when the function runs.
@@ -287,7 +283,6 @@ savePicture(height = 600, width = 800, format = "png")
 ```
 
 ### String Operations
-
 Scala has access to the Java String class and its methods, such as  `charAt`, `split`, `replace`. 
 
 Besides this, Scala has its own utilities.
@@ -331,6 +326,7 @@ println(raw"$escaped") // This is a
 ```
 
 ## Object-Oriented Programming
+
 Scala is an object-oriented language with classes that can be instantiated.
 
 Classes can be extended through inheritance. The subclass inherits all the members and methods of the superclass. 
@@ -384,13 +380,11 @@ def this(name: String) = this(name, 0)
 ```
 
 ### Access Modifiers
-
 All fields and methods are by default public. You can restrict them using the `private` or `protected` keywords.
 
 A `private` member or method is only accessible by the class. `Protected` means that a class and all its descendents have access to the field or method.
 
 ### Objects
-
 Scala does not have class-level functionality. It doesn't know the concept of "static". A Scala object can, however, have static-like functionality.
 
 Objects are defined similarly to classes but do not receive parameters. An object can have values and method definitions.
@@ -424,7 +418,6 @@ Since a Scala application has to run on the JVM, a Scala application is a Scala 
 - extends App (which already has a main method): `object Person extends App {...}`
 
 ### Inheritance
-
 Scala has single class inheritance. 
 
 The subclass only inherits non-private members of the superclass.
@@ -444,7 +437,6 @@ class Cat extends Animal {
 ```
 
 ### Constructors
-
 When you instantiate a subclass, the JVM first calls the constructor of its parent class.
 
 The Scala compiler forces you to guarantee that there is a correct super constructor to call when using a derived class.
@@ -459,7 +451,6 @@ class Adult(name: String, age: Int, idCard: String) extends Person(name)
 ```
 
 ### Overriding
-
 Overriding works for both methods and vals. You can override fields in the class body or directly in the constructor arguments.
 
 All instances of derived classes will use the overriden member whenever possible.
@@ -486,7 +477,6 @@ There are cases when you want to limit overriding of fields/methods:
 3. seal the class. You can extend classes in this file, but it prevents extension in other files `sealed class Animal {...}`
 
 ### Subtype Polymorphism
-
 Scala has subtype polymorphism.
 
 In the example below, at compile time, the compiler only knows you're calling the method from an animal object. At runtime it will be called from a dog object if the Dog class overrides this method inherited from Animal.
@@ -499,7 +489,6 @@ aDeclaredAnimal.eat() // the most derived method will be called at runtime
 ```
 
 ### Abstract Classes
-
 Scala has abstract classes, where all fields and methods don't necessarily need to have implementation. Abstract classes can have both sbstract and non-abstract members.
 
 Whatever class implements the abstract class will need to provide an implementation of the abstract methods.
@@ -514,7 +503,6 @@ abstract class WalkingAnimal {
 ```
 
 ### Traits (Interfaces)
-
 Scala also has traits, for the ultimate abstract type, where everything is unimplemented. 
 
 Traits can have both abstract and non-abstract members. You **can** provide implementation in traits but they are usually used to denote characteristics of objects that can later be implemented in concrete classes.
@@ -544,7 +532,6 @@ Traits differ from abstract classes in the following ways:
 3. traits describe "behavior", abstract classes describe a "thing"
 
 ### Scala's Type Hierarchy
-
 Scala's type hierarchy starts with `scala.Any`, then `scala.AnyRef` (mapped to java.lang.Object). All classes (for example, String, List, Set) will derive from `AnyRef` unless you explicitly say they extend some other class. Derived from all of these is `scala.Null` (its only instance is the null reference).
 
 `scala.AnyVal` derives from `scala.Any` and contain all the primitive values (Int, Unit, Boolean, Float).
@@ -553,7 +540,6 @@ Derived from all of them is `scala.Nothing`, in the sense that nothing is a subt
 
 
 ### Method Notation and Method Naming
-
 Method notation is a form of syntactic sugar to make Scala more closely resemble natural language.
 
 Methods that have a single parameter can be called using infix notation / operator notation: `object method argument`.
@@ -603,7 +589,6 @@ mary() // these are equivalent
 ```
 
 ### Anonymous Classes
-
 Scala has anonymous classes, which let you instantiate types and override fields and methods on the spot.
 
 They also effectively let you instantiate abstract classes. 
@@ -653,7 +638,6 @@ MySingleton(65) // equivalent to MySingleton.apply(65)
 ```
 
 ### Companions
-
 You can define a class (or trait) and a singleton object in the same file with the same name. In this instance, the class and object are called companions.
 
 Companions can access each other's private fields and methods. 
@@ -706,7 +690,6 @@ println(bob) // Person(Bob, 54)
 There are also case objects, which have the same properties as case classes except they don't get companion objects (they are their own companion object).
 
 ### Enums (Scala 3)
-
 Enums are a data type you can define much like a class, where you can enumerate all the possible caes (constants) of that type. 
 
 An enum is a sealed data type that cannot be extended.
@@ -744,7 +727,6 @@ def main(args: Array[String]): Unit = {
 ```
 
 ### Exceptions
-
 In Scala throwing an exception is an expression which returns `Nothing`.
 
 Exceptions are instances of classes. For example, when you throw a `NullPointerException` you are instantiating an instance of `NullPointerException` and then throwing it. 
@@ -801,7 +783,6 @@ val princess = new playground.Cinderella // fully qualified class name
 Packages are ordered hierarchically and this maps the folder structure in the filesystem: `lectures.part2oop.OOBasics`.
 
 ### Package Objects
-
 A package object originated form the desire to write methods or constants outside of everything else, for example universal utility methods or constants.
 
 There can only be one package object per package and its name is the same as the package. The filename is `package.scala`.
@@ -867,7 +848,6 @@ You can have multiple type parameters, for example `class MyMap[Key, Value]`.
 Traits can also be type paramaterized but objects cannot.
 
 ### Generic Methods
-
 Methods can take a type paramater and then a concrete argument when called.
 
 ```Scala
@@ -909,7 +889,6 @@ val trainer: Trainer[Cat] = new Trainer[Animal]
 ```
 
 ### Bounded Types
-
 Bounded types let you use your generic classes only for certain types that are either a subclass of a different type, using `<:`, or a superclass of a different type, using `>:`.
 
 ```Scala
@@ -960,11 +939,9 @@ val aReversedList = aList.reverse // returns a NEW list
 ```
 
 ### Object-Oriented vs Functional
-
 Scala is marketed as a mix of object-oriented and functional programming. It is actually closer to object-oriented. All the code and values you operate with are inside an instance of some type. There are no methods outside a class/object.
 
 ### Extending App with Objects
-
 When you define an object that extends `App` you are inheriting from the App type's ``main`` method.
 
 Methods on objects are similar to Java static methods. So you already have a static main method implemented by extending App. This is what makes them runnable.
@@ -974,6 +951,7 @@ object ObjectOrientation extends App {...}
 ```
 
 ## Functional Programming
+
 Scala is an object-oriented language and runs on the JVM. The JVM knows what an object is but doesn't know what a function is as a first class citizen.
 
 In functional programming the goal is to work with functions as with any other kind of value:
@@ -1040,7 +1018,6 @@ println(concatenator("Hello ", "Scala"))
 ```
 
 ### Anonymous Functions
-
 Instantiating a function is still tied to object-oriented programming. The syntax for anonymous functions (lambdas) lets you be more concise and functional.
 
 Anonymous functions consist of `paramaters => expression`, the return type is always inferred. 
@@ -1138,7 +1115,6 @@ println(preciseFormat(Math.PI)) // 3.14159265
 ```
 
 ### map, flatMap and filter
-
 Scala Lists have several useful methods, including: `map`, `flatMap` and `filter`.
 
 The `map` method takes an anonymous function (lambda) as its argument and this function is applied to every element in the List.
@@ -1193,7 +1169,6 @@ list.foreach(println)
 ```
 
 ### For Comprehensions
-
 Instead of using chains of higher-order functions, you can use a for comprehension, which can be reduced to a single value. The compiler will interpret it as a chain.
 
 For comprehensions are more readable and are preferred in practice.
@@ -1228,6 +1203,7 @@ for {
 ```
 
 ## Collections
+
 Scala offers both mutable and immutable colections. The standard library has type definitions for immutable collections so you are using the immutable versions by default.
 
 ### Immutable Collections
@@ -1454,6 +1430,7 @@ println(phonebook.view.mapValues(number => "0245-" + number).toMap)
 ```
 
 ## Pattern Matching
+
 Pattern matching is a mechanism for checking a value against a pattern. It's comparable to a switch statement in Java and can be used instead of a series of if/else statements. Think of it as a switch expression.
 
 Pattern matching will try all cases in sequence.
@@ -1508,6 +1485,7 @@ val listDescription = aList match {
 If a pattern match doesn't match anything it'll thorw a MatchError so it's good practice to include a catch all case. 
 
 ## More Advanced Features
+
 ### Lazy Evaluation
 Lazy evaluation means an expression is not evaluated until it's first used. It's useful ininfinite collections.
 
@@ -1522,28 +1500,72 @@ val eagerValue = lazyValueWithSideEffect + 1 // lazyValueWithSideEffect used, co
 ```
 
 ### "Pseudo Collections"
+`Option` and `Try` are useful when you have unsafe methods, which might cayse a `NullPointerException`, saving you from having to check for the method returning a Null value.
 
-`Option` and `Try` are useful when you have unsafe methods, for example saving you from having to check for the method returning a Null value.
-
-An Option is like a "collection" containing at most one element. 
+### Options
+An Option is like a "collection" containing at most one element. It acts as a wrapper for a value that might or might not be present.
 
 For example, you can pass a method which can return Null to Option. If the method returns a valid value, then the "collection" contains that value. It'll return ``Some``, a subtype of Option.
 
 If the method returns Null, the value will be ``None`` (a singleton object and still a valid value).
 
-You can used Options with pattern matching and operate on them with map, flatMap and filter.
+Lots of methods on collections are designed to work with Options.
+
+Safe APIs are designed to return Options so the user of the API doesn't need to wrap the result in an Option.
 
 ```Scala
 def methodWhichCanReturnNull(): String = "Hello, Scala"  
 val anOption = Option(methodWhichCanReturnNull()) // Some("Hello, Scala")  
-// option = "collection" which contains at most one element: Some(value) or None
 
+// option = "collection" which contains at most one element: Some(value) or None
 val stringProcessing = anOption match {  
 	case Some(string) => s"I have obtained a valid string: $string"  
 	case None => "I obtained nothing"  
 }
+
+// Unsafe API method
+def unsafeMethod(): String = null
+
+// Safer way to write API methods
+def saferMethod(): Option[String] = None
+def backupMethod(): Option[String] = Some("A valid result")
+
+val saferResult = saferMethod() orElse backupMethod()
+
+// collections use Options
+val map = Map("key" -> "value")
+map.get("key") // Some(value)
+map.get("other") // None
+
+val list = List(1,2,3)
+list.headOption // Some(1)
+list.find(_ % 2 == 0) // Some(2)
 ```
 
+Options have methods such as `isEmpty` and `get`.
+
+`get` is an unsafe way to retrieve a value from an Option. In general, don't use it.
+
+You can used Options with pattern matching and operate on them with ``map``, ``flatMap``, ``filter`` and for comprehensions.
+
+```Scala
+// using chained functions
+config.get("host")
+	.flatMap(host => config.get("port")
+	.flatMap(port => Connection(host, port))
+	.map(connection => connection.connect))
+	.foreach(println)
+
+// using for comprehension
+val forConnectionStatus = for {
+	host <- config.get("host")
+	port <- config.get("port")
+	connection <- Connection(host, port)
+} yield connection.connect
+forConnectionStatus.foreach.println()
+```
+
+### Tries
 A Try guards against methods which can throw exceptions, avoiding having to write defensive try/catch blocks. 
 
 It's essentially a "collection" with either a value if the code went well, or an exception if the code threw one. The two subtypes of Try are `Success` and `Failure`.
@@ -1560,9 +1582,8 @@ val anotherStringProcessing = aTry match {
 }
 ```
 
-
 ### Asynchronous Programming
-asynchronous programming in Scala is done with another pseudo-collection, `Future`. 
+Asynchronous programming in Scala is done with another pseudo-collection, `Future`. 
 
 A Future represents a value which may or may not _currently_ be available, but will be available at some point, or an exception if that value could not be made available.
 
@@ -1611,6 +1632,7 @@ println(23.isEven()) // equivalent to new MyRichInteger(23).isEven()
 ```
 
 ## Contextual Abstractions (Scala 3)
+
 ### Context Parameters/Arguments
 Scala's compiler sorts a list by accessing the built-in value of the trait  `Ordering[Int]`.
 
@@ -1679,7 +1701,6 @@ Context arguments are useful for:
 - type-level programming
 
 ### Extension Methods
-
 You can add additional methods to a type after it was defined even if you have no control over the source of that type.
 
 Extension methods are heavily used in functional programming libraries, such as Cats.
