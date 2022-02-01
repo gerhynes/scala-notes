@@ -1404,20 +1404,53 @@ val twoByTwo = aRange.map(x => 2 * x).toList
 You can use the `toList`, `toSet`, `toSeq` methods to convert between these collections.
 
 ### Tuples
-Tuples are a simple container for disparate items.
+Tuples are a simple "list-like" container for grouping disparate items. They are finite and ordered. 
+
+Tuples can at most group 22 elements, since they are used in conjunctiuon with function types.
+
+You can access specific elements using `_n` (this isn't zero-indexed).
 
 ```Scala
-val aTuple = ("Bon Jovi", "Rock", 1982)
+val aTuple = (2, "Hello Scala") // equivalent to Tuple2[Int, String]
+
+println(aTuple._1) // access the first element
+println(aTuple.copy(_2 = "goodbye Java"))  // replace second element in copy
+println(aTuple.swap)  // ("hello, Scala", 2)
 ```
 
 ### Maps
-A Map is an iterable sequence that consists of pairs of keys and values.
+A Map is an iterable sequence that consists of pairs of keys and values. 
 
+You populate a map with tuples (pairings), which can also be written as `kay -> value`.
+
+Trying to access an element that doesn't exist will crash your programme. You can protect against this either by using the `withDefaultValue` method to set a default value or by throwing an exception.
 ```Scala
 val aPhoneBook: Map[String, Int] = Map(
 	("Daniel", 034937846),
 	"Jane" -> 187327063 // equivalent to ("Jane", 187327063)
-)
+).withDefaultValue(-1)
+
+println(aPhonebook.contains("Jane"))  
+println(aPhonebook("Mary")) // not in map
+```
+
+Maps are immutable, so to add a value you need to create a new map.
+
+```Scala
+val aNewPairing = "Mary" -> 123456789
+val aNewPhonebook = aPhoneBook + aNewPairing
+```
+
+Maps have access to `map`, `flatMap` and `filter`. These apply to pairings.
+
+You can operate on keys using `filterKeys` or values using `mapValues`.
+
+```Scala
+println(phonebook.map(pair => pair._1.toLowerCase -> pair._2))
+
+println(phonebook.view.filterKeys(x => x.startsWith("J")).toMap)
+
+println(phonebook.view.mapValues(number => "0245-" + number).toMap)
 ```
 
 ## Pattern Matching
