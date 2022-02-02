@@ -1502,7 +1502,7 @@ val eagerValue = lazyValueWithSideEffect + 1 // lazyValueWithSideEffect used, co
 ### "Pseudo Collections"
 `Option` and `Try` are useful when you have unsafe methods, which might cayse a `NullPointerException`, saving you from having to check for the method returning a Null value.
 
-### Options
+### Option
 An Option is like a "collection" containing at most one element. It acts as a wrapper for a value that might or might not be present.
 
 For example, you can pass a method which can return Null to Option. If the method returns a valid value, then the "collection" contains that value. It'll return ``Some``, a subtype of Option.
@@ -1565,10 +1565,22 @@ val forConnectionStatus = for {
 forConnectionStatus.foreach.println()
 ```
 
-### Tries
-A Try guards against methods which can throw exceptions, avoiding having to write defensive try/catch blocks. 
+### Try
+A Try is a wrapper for a computation that might or might not fail.
 
-It's essentially a "collection" with either a value if the code went well, or an exception if the code threw one. The two subtypes of Try are `Success` and `Failure`.
+A Try guards against methods which can throw exceptions, avoiding having to write defensive try/catch blocks and preventing runtime crashes.
+
+Multiple nested try/catch blocks make the code hard to follow and you can't chain multiple operations that are prone to failure.
+
+A Try is essentially a "collection" with either a value if the code went well, or an exception if the code threw one. The two subtypes of Try are `Success` and `Failure`.
+
+`Failure`  holds the throwable that would have been thrown while `Success` wraps the value that the successful computation returned.
+
+```Scala
+sealed abstract class Try[+T]
+case class Failure[+T](t: Throwable) extends Try[T]
+case class Success[+T](value: T) extends Try[T]
+```
 
 The Try object can also be processed with map, flatMap and filter.
 
@@ -1581,6 +1593,20 @@ val anotherStringProcessing = aTry match {
 	case Failure(ex) => s"I have obtained an exception: $ex"  
 }
 ```
+
+A Try can be used similar to an Option to make unsafe methods safer.
+
+If your code might return null, use an Option. 
+
+If your code might throw exceptions, use a Try.
+
+```Scala
+def betterUnsafeMethod(): Try[String] = Failure(new RuntimeException)
+def betterBackupMethod(): Try[String] = Success("A valid result")
+val betterFallback = betterUnsafeMethod() orElse betterBackupMethod()
+```
+
+You can use ``map``, ``flatMap``, `filter` and for comprehension with a Try.
 
 ### Asynchronous Programming
 Asynchronous programming in Scala is done with another pseudo-collection, `Future`. 
