@@ -1435,7 +1435,7 @@ Pattern matching is a mechanism for checking a value against a pattern. It's com
 
 Pattern matching will try all cases in sequence.
 
-`_` serves as the catch all case. Cases are also called alternatives.
+`_` serves as the catch all case (wildcard). Cases are also called alternatives.
 
 ```Scala
 val anInteger = 55
@@ -1452,15 +1452,23 @@ Pattern matching can also deconstruct data structures into their constituent par
 
 One of the benefits of case classes is being able to deconstruct them in pattern matching. Pattern matching can also be used for normal classes but requires much more work.
 
+You can add a guard to test the decomposed values against a condition.
+
 ```Scala
 case class Person(name: String, age: Int)
-val bob = Person("Bob", 43) // equivalent to Person.apply("Bob", 43)
+val bob = Person("Bob", 20) // equivalent to Person.apply("Bob", 43)
 
 val personGreeting = bob match {  
+	case Person(n, a) if a < 21 => s"Hi, my name is $n. I can't drink in the US"
 	case Person(n, a) => s"Hi, my name is $n and I am $a years old." 
 	case _ => "Something else"  
 }
 ```
+
+1. Cases are matched in order  
+2. If no cases match, you get a `MatchError`  (so use a wildcard)
+3. The type of the PM expression is the unified type of all the types in all the cases  
+4. Pattern Matching works really well with case classes*
 
 Pattern matching can also deconstruct tuples.
 
@@ -1482,7 +1490,38 @@ val listDescription = aList match {
 }
 ```
 
-If a pattern match doesn't match anything it'll thorw a MatchError so it's good practice to include a catch all case. 
+If a pattern match doesn't match anything it'll throw a `MatchError` so it's good practice to include a catch all case. 
+
+Catch blocks and generators are also based on pattern matching.
+
+```Scala
+// catches are actually matches
+try {  
+  // do something 
+} catch {  
+  case e: RuntimeException => "runtime"  
+	case npe: NullPointerException => "npe"  
+	case _ => "something else"  
+}  
+
+// equivalent to 
+try {  
+  // do something 
+} catch (e) {  
+  e match {  
+    case e: RuntimeException => "runtime"  
+		case npe: NullPointerException => "npe"  
+		case _ => "something else"  
+	 }  
+}
+
+// generators are also based on pattern matching 
+val tuples = List((1,2), (3,4))  
+val filterTuples = for {  
+  (first, second) <- tuples  
+} yield first * second
+// similaryly, case classes, ::
+```
 
 ## More Advanced Features
 
@@ -1752,3 +1791,122 @@ extension [A] (list: List[A])
 
 val theSum_v2 = aList.combineAllValues
 ```
+
+### Braceless Syntax (Scala 3)
+Scala 3 introduced an alternative braceless syntax based on significant indentation (similar to Python).
+
+An if expression can now be written as any of the following:
+
+```Scala
+// oneliner
+val anIfExpression = if (2 > 3) "bigger" else "smaller"  
+  
+// java-style  
+val anIfExpression_v2 =  
+	if (2 > 3) {  
+    "bigger"  
+ } else {  
+    "smaller"  
+ }  
+  
+// compact  
+val anIfExpression_v3 =  
+	if (2 > 3) "bigger"  
+	else "smaller"  
+  
+// scala 3  
+val anIfExpression_v4 =  
+	if 2 > 3 then  
+		"bigger" // higher indentation than the if part  
+	else  
+		"smaller"  
+
+// scala 3 - more complex
+val anIfExpression_v5 =  
+	if 2 > 3 then  // anything after then is treated as a code block
+		val result = "bigger"  
+		result  
+	else  
+		val result = "smaller"  
+		result  
+  
+// scala 3 one-liner  
+val anIfExpression_v6 = if 2 > 3 then "bigger" else "smaller"
+```
+
+For comprehensions can be written as:
+
+```Scala
+// scala 2 
+val aForComprehension = for {  
+  n <- List(1,2,3)  
+  s <- List("black", "white")  
+} yield s"$n$s"  
+  
+// scala 3  
+val aForComprehension_v2 =  
+	for  
+		n <- List(1,2,3)  
+    s <- List("black", "white")  
+  yield s"$n$s"
+```
+
+Pattern matching can be written as:
+
+```Scala
+// scala 2
+val meaningOfLife = 42  
+val aPatternMatch = meaningOfLife match {  
+	case 1 => "the one"  
+	case 2 => "double or nothing"  
+	case _ => "something else"  
+}  
+  
+// scala 3  
+val aPatternMatch_v2 =  
+	meaningOfLife match  
+		case 1 => "the one"  
+		case 2 => "double or nothing"  
+		case _ => "something else"
+```
+
+You can define methods without braces. Everything at the same indent level will be treated as belonging to the same code block. Be careful with this.
+
+```Scala
+def computeMeaningOfLife(arg: Int): Int = // significant indentation starts here - think of it like a phantom code block  
+	val partialResult = 40
+
+
+
+	partialResult + 2 // sill in the same phantom code block
+```
+
+You can also define classes, traits, objects, enums and data types with significant indentation.
+
+You need to add `:` to a class definition to indicate to the compiler that you're going to start an indentation region.
+
+Methods and fields need to start at the same indentation.
+
+To clarify where a class (or method, match, if expression etc.) ends you can add an `end` token.
+
+You should probably add an `end` token to any method with more than 4 lines of code and for a class, trait or object that doesn't fit entirely on the screen.
+
+```Scala
+// class definition with significant indentation (same for traits, objects, enums etc)  
+class Animal: // compiler expects the body of Animal  
+	def eat(): Unit =  
+		println("I'm eating")  
+  end eat // optional end token for clarity
+  
+	def grow(): Unit =  
+		println("I'm growing")  
+  
+  // 3000 more lines of code  
+end Animal // if, match, for, methods, classes, traits, enums, objects
+
+// anonymous classes  
+val aSpecialAnimal = new Animal:  
+	override def eat(): Unit = println("I'm special")
+```
+
+Don't mix tabs and spaces if using significant indentation.
