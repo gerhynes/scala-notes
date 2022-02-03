@@ -1680,20 +1680,56 @@ If you define a method with implicit arguments you can call it without passing a
 def aMethodWithImplicitArgs(implicit arg: Int) = arg + 1  
 implicit val myImplicitInt = 46  
 println(aMethodWithImplicitArgs)  // aMethodWithImplicitArgs(myImplicitInt)
+
+implicit val timeout = 3000  
+def setTimeout(f: () => Unit)(implicit timeout: Int) = f()  
+  
+setTimeout(() => println("timeout"))// extra parameter list omitted
 ```
 
 You use implicit conversions to add methods to existing types over which you don't have control.
 
-For example, you can give an Int an isEven method using implicit conversion.
+For example, you can give an Int an ``isEven`` method using implicit conversion.
 
 This is dangerous. Use it carefully.
 
 ```Scala
+// implicit defs  
+case class Person(name: String) {  
+  def greet = s"Hi, my name is $name"  
+}  
+  
+implicit def fromStringToPerson(string: String): Person = Person(string)  
+"Peter".greet  
+// fromStringToPerson("Peter").greet - automatically by the compiler
+
 implicit class MyRichInteger(n: Int) {  
 	def isEven() = n % 2 == 0  
 }  
   
 println(23.isEven()) // equivalent to new MyRichInteger(23).isEven()
+```
+
+Implicits need to be organized carefully.
+
+You can decide how the compiler fetches an implicit value for you. The compiler first looks in local scope, then imported scope, then the companion objects of the types included in the call.
+
+```Scala
+// local scope
+// collections sorted method takes an implicit parameter. 
+implicit val inverseOrdering: Ordering[Int] = Ordering.fromLessThan(_ > _)  
+List(1,2,3).sorted // List(3,2,1)
+
+// imported scope
+import scala.concurrent.ExecutionContext.Implicits.global  
+val future = Future {  
+  println("hello, future")  
+}
+
+// companion objects of the types included in the call  
+object Person {  
+  implicit val personOrdering: Ordering[Person] = Ordering.fromLessThan((a, b) => a.name.compareTo(b.name) < 0)  
+}
 ```
 
 ## Contextual Abstractions (Scala 3)
@@ -1910,3 +1946,68 @@ val aSpecialAnimal = new Animal:
 ```
 
 Don't mix tabs and spaces if using significant indentation.
+
+### Partial Functions
+Partial functions are functions that operate only on a subset of the given input domain.
+
+Partial functions are based on pattern matching.
+
+This function only operates on the values 1, 2 and 5 and will throw an exception for anything else.
+```Scala
+val partialFunction: PartialFunction[Int, Int] = {
+	case 1 => 42
+	case 2 => 65
+	case 5 => 999
+}
+
+// equivalent to 
+val pf = (x: Int) => x match {
+	case 1 => 42
+	case 2 => 65
+	case 5 => 999
+}
+
+val function: (Int => Int) = partialFunction
+```
+
+Partial functions can operate on collections as well.
+
+```Scala
+val modifiedList = List(1,2,3).map {  
+	case 1 => 42  
+	case _ => 0  
+}
+```
+
+Partial functions are useful for lifting.
+
+```Scala
+val lifted = partialFunction.lift // total function Int => Option[Int]  
+lifted(2) // Some(65)  
+lifted(5000) // None
+```
+
+`orElse` can be used to chain partial functions.
+
+```Scala
+val pfChain = partialFunction.orElse[Int, Int] {  
+  case 60 => 9000  
+}  
+  
+pfChain(5) // 999 per original partialFunction  
+pfChain(60) // 9000 per additional partial function
+pfChain(457) // throws a MatchError
+```
+
+### Type Aliases
+A type alias is usually used to simplify declaration for complex types, such as parameterized types or function types.
+
+```Scala
+type ReceiveFunction = PartialFunction[Any, Unit]
+
+def receive: ReceiveFunction = {  
+  case 1 => println("hello")  
+  case _ => println("confused....")  
+}
+```
+
