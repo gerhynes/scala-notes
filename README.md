@@ -1,4 +1,8 @@
 # Scala Notes
+Sources:
+- [The Scala Documentation](https://docs.scala-lang.org/)
+- [Scala & Functional Programming Essentials](https://www.udemy.com/course/rock-the-jvm-scala-for-beginners/)
+- [Get Programming with Scala](https://www.manning.com/books/get-programming-with-scala)
 
 Scala is a statically-typed general purpose programming language which supports both object-oriented and functional programming paradigms. It was designed to be syntactically concise and address some of the criticisms of Java.
 
@@ -2585,7 +2589,7 @@ val betterFallback = betterUnsafeMethod() orElse betterBackupMethod()
 An instance of `Either[A,B]` can represent a faled outcome by returnng type `A` and a successful outcome by retuning type `B`. Compared to `Option`, `Either` lets you prvide more information when something fails.
 
 ```Scala
-private def containsOnlyDigits(phoneNumber: Strng): Boolean = ???
+private def containsOnlyDigits(phoneNumber: String): Boolean = ???
 private def hasExpectedSize(phoneNumber: String): Boolean = ???
 
 def validatePhoneNumber(phoneNumber: String): Either[String, String] =
@@ -2596,12 +2600,12 @@ def validatePhoneNumber(phoneNumber: String): Either[String, String] =
 	else Right(phoneNumber)
 ```
 
-You cannot intialize `Either` directly, as it's asbstract. For an instance of `Either[A,B]`, provide a value of type `A` to create a `Left[A,B]` and a value of type `B` to create a `Right[A,B]`.
+You cannot initialize `Either` directly, as it's asbstract. For an instance of `Either[A,B]`, provide a value of type `A` to create a `Left[A,B]` and a value of type `B` to create a `Right[A,B]`.
 
 You can use pattern matching on `Either`. You need to provide case clauses for both `Left` and `Right` because `Either` is a sealed class. 
 
 ```Scala
-def toMessage(outcome: Ether[Strng, Pass]): String =
+def toMessage(outcome: Either[String, Pass]): String =
 	outcome match {
 		case Left(msg) => s"Fail: $msg"
 		case Rght(pass) => s"Pass with score ${pass.score}
