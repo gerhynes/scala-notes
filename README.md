@@ -1,4 +1,5 @@
 # Scala Notes
+
 Sources:
 - [The Scala Documentation](https://docs.scala-lang.org/)
 - [Scala & Functional Programming Essentials](https://www.udemy.com/course/rock-the-jvm-scala-for-beginners/)
@@ -38,7 +39,7 @@ Frequently used types are Int, Boolean, Char, Float and String (which has its ow
 val aString = "Scala isn't so scary"
 ```
 
-Strings can be concatenated using the + operator.
+Strings can be concatenated using the `+` operator.
 
 ```Scala
 val anotherString = "Maybe" + " I'll " + " like " + " Scala"
@@ -273,7 +274,7 @@ Either:
 ```Scala
 def savePicture(format: String = "jpg", width: Int = 1920, height: Int = 1080): Unit = println("saving picture")
 
-savePicture(800) // which paramter are you referring to?
+savePicture(800) // which parameter are you referring to?
 savePicture("png") // this works
 savePicture(width = 800) // this works
 ```
@@ -293,7 +294,7 @@ You can convert a string to an integer using `toInt`.
 
 You can prepend to a string with `+:` and append with `:+`.
 
-`take` lets you acces a certain number of characters from a string.
+`take` lets you access a certain number of characters from a string.
 
 ```Scala
 val aNumberString = "2"  
@@ -303,13 +304,14 @@ println(str.reverse)
 println(str.take(2))
 ```
 
-You can interpolate a value into a string using `s"$valueName"` and an expression using `s"${}"`.
+You can interpolate a value into a string using `s"$valueName"` and an expression into a string using `s"${}"`.
 
 ```Scala
-val greeting = s"Hello, my name is $name and I am $age years old"val anotherGreeting = s"Hello, my name is $name and I will be turning ${age + 1} years old."
+val greeting = s"Hello, my name is $name and I am $age years old"
+val anotherGreeting = s"Hello, my name is $name and I will be turning ${age + 1} years old."
 ```
 
-F-interpolators are for formatted strings, similar to `printf`. For example `%2.2f` to show at least 2 characters and to 2 decimals precision.
+F-interpolators are for formatted strings, similar to `printf`. For example, use `%2.2f` to show at least 2 characters and to 2 decimals precision.
 
 ```Scala
 val speed = 1.2f  
@@ -432,7 +434,7 @@ class Animal {
 class Cat extends Animal {  
 	def crunch = {  
 	  eat  
-		println("crunch crunch")  
+	  println("crunch crunch")  
   }  
 }
 ```
@@ -442,7 +444,7 @@ When you instantiate a subclass, the JVM first calls the constructor of its pare
 
 The Scala compiler forces you to guarantee that there is a correct super constructor to call when using a derived class.
 
-If you use an auxiliary constructor, you can also specify that in the extends clause.
+If you use an auxiliary constructor, you can also specify that in the `extends` clause.
 
 ```Scala
 class Person(name: String, age: Int) {  
@@ -463,7 +465,7 @@ class Dog(override val creatureType: String) extends Animal {
   // override val creatureType = "domestic" // can override in the body or directly in the constructor arguments  
 	override def eat = {  
 	  super.eat  
-		println("crunch, crunch")  
+	  println("crunch, crunch")  
   }  
 }
 
@@ -473,9 +475,9 @@ println(dog.creatureType)
 ```
 
 There are cases when you want to limit overriding of fields/methods:
-1. use `final` on a member  `final def eat = println("nomnom")`
-2. use `final` on the entire class `final class Animal {...}`
-3. seal the class. You can extend classes in this file, but it prevents extension in other files `sealed class Animal {...}`
+1. use `final` on a member:  `final def eat = println("nomnom")`
+2. use `final` on the entire class: `final class Animal {...}`
+3. seal the class. You can extend classes in this file, but it prevents extension in other files: `sealed class Animal {...}`
 
 ### Subtype Polymorphism
 Scala has subtype polymorphism.
@@ -604,8 +606,9 @@ println(Mary isAlive)
 `apply` as a method name has special properties in Scala. Whenever the compiler sees an object being called like a function, it looks for a definition of `apply` in that class.
 
 ```Scala
+// these are equivalent
 mary.apply() 
-mary() // these are equivalent
+mary()
 ```
 
 ### Anonymous Classes
@@ -643,7 +646,7 @@ A singleton object is a class that has exactly one instance.
 
 Scala has an `apply` method that can be present in any object. The presence of the apply method in a class allows instances of that class to be invoked like functions.
 
-You can call the apply method directly, with its arguments, or call it using the name of the singleton object. This can be useful in functional programming.
+You can call the `apply` method directly, with its arguments, or call it using the name of the singleton object. This can be useful in functional programming.
 
 ```Scala
 object MySingleton { // the only instance of the mySingleton type
@@ -749,7 +752,7 @@ val (name, age) = Person.unapply(p)
 You get `apply` and `unapply` methods for free when you create case classes rather than regular classes.
 
 ### Case Classes
-Case classes are lighweight data structures with little boilerplate. They let you define a class, a companion object and a lot of sensible default in one go.
+Case classes are lighweight data structures with little boilerplate. They let you define a class, a companion object and a lot of sensible defaults in one go.
 
 When you define a case class, the compiler automatically generates: 
 - sensible `equals` and `hashcode` methods (for inclusion into various collections that rely on equality).
@@ -813,7 +816,9 @@ def welcome(person: Person): String = person match {
 }
 ```
 
-The automatically generated `copy` method is helpful when you need to (i) clone an object and (ii) update one or more fields during the cloning process. 
+The automatically generated `copy` method is helpful when you need to:
+1. clone an object
+2. update one or more fields during the cloning process
 
 Since you don't mutate data structures in functional programming, this is how you create a new instance of a class from an existing instance, called "update as you copy".
 
@@ -878,7 +883,7 @@ class Speak extends Actor {
 ```
 
 ### Enums (Scala 3)
-Enums are a data type you can define much like a class, where you can enumerate all the possible caes (constants) of that type. 
+Enums are a data type you can define much like a class, where you can enumerate all the possible cases (constants) of that type. 
 
 An enum is a sealed data type that cannot be extended.
 
@@ -888,29 +893,29 @@ You can use an enum's companion object as a source for factory methods.
 
 ```Scala
 enum Permissions {
-	case RAED, WRITE, EXECUTE, NONE
+  case READ, WRITE, EXECUTE, NONE
 
-	def openDocument(): Unit = 
-		if (this == READ) println("Opening document...")
-		else println("Reading not allowed")
+  def openDocument(): Unit = 
+    if (this == READ) println("Opening document...")
+	else println("Reading not allowed")
 }
 
 val somePermissions: Permissions = Permissions.READ
 
 enum PermissionsWithBits(bits: Int) {
-	case READ extends PermissionsWithBits(4) // 100
-	case WRITE extends PermissionsWithBits(2) // 010
-	case EXECUTE extends PermissionsWithBits(1) // 001
-	case NONE extends PermissionsWithBits(0) // 000
+  case READ extends PermissionsWithBits(4) // 100
+  case WRITE extends PermissionsWithBits(2) // 010
+  case EXECUTE extends PermissionsWithBits(1) // 001
+  case NONE extends PermissionsWithBits(0) // 000
 }
 
 object PermissionsWithBits {
-	def fromBits(bits: Int): PermissionsWithBits = ???
-	PermissionsWithBits.NONE
+  def fromBits(bits: Int): PermissionsWithBits = ???
+  PermissionsWithBits.NONE
 }
 
 def main(args: Array[String]): Unit = {
-	somePermissions.openDocument()
+  somePermissions.openDocument()
 }
 ```
 
@@ -971,7 +976,7 @@ val princess = new playground.Cinderella // fully qualified class name
 Packages are ordered hierarchically and this maps the folder structure in the filesystem: `lectures.part2oop.OOBasics`.
 
 ### Package Objects
-A package object originated form the desire to write methods or constants outside of everything else, for example universal utility methods or constants.
+A package object originated from the desire to write methods or constants outside of everything else, for example universal utility methods or constants.
 
 There can only be one package object per package and its name is the same as the package. The filename is `package.scala`.
 
@@ -1018,8 +1023,8 @@ For example, in the Scala standard library `List` is generic and can be told to 
 
 ```Scala
 abstract class MyList[T] {
-	def head: T
-	def tail: MyList[T]
+  def head: T
+  def tail: MyList[T]
 }
 
 // using a generic with a concrete type
@@ -1040,16 +1045,16 @@ Methods can take a type paramater and then a concrete argument when called.
 
 ```Scala
 object MyList {
-	def empty[A]: MyList[A] = ???
+  def empty[A]: MyList[A] = ???
 }
 
-val emptyInteherList = MyList.empty[Int]
+val emptyIntegerList = MyList.empty[Int]
 ```
 
 ### Variance Problem
 Say you have an `Animal` class that is extended by `Cat` and `Dog` classes.
 
-Does a list of `Cat` also extend a List of `Animal`?
+Does a list of type `Cat` also extend a list of type `Animal`?
 
 There are 3 possible answers:
 - yes - covariance (use `+` before the type parameter)
@@ -1107,11 +1112,11 @@ Similarly, `Nothing` is a proper substitute for any type and so can be used for 
 
 ```Scala
 object Empty extends MyList[Nothing] {
-	def head: Nothing = throw new NoSuchElementException  
-	def tail: MyList[Nothing] = throw new NoSuchElementException  
-	def isEmpty: Boolean = true  
-	def add[B >: Nothing](element: B): MyList[B] = new Cons(element, Empty)  
-	def printElements: String = ""
+  def head: Nothing = throw new NoSuchElementException  
+  def tail: MyList[Nothing] = throw new NoSuchElementException  
+  def isEmpty: Boolean = true  
+  def add[B >: Nothing](element: B): MyList[B] = new Cons(element, Empty)  
+  def printElements: String = ""
 }
 ```
 
@@ -1156,7 +1161,7 @@ An inpure function does one or more of these things:
 - mutates the parameters its given
 - performs I/O with the outside world
 
-Write the "core" of your aplication in pure functions and write impure wrappers around it to interact with the outside world.
+You should write the "core" of your aplication in pure functions and write impure wrappers around it to interact with the outside world.
  
 Scala is an object-oriented language and runs on the JVM. The JVM knows what an object is but doesn't know what a function is as a first class citizen.
 
@@ -1179,7 +1184,7 @@ All Scala functions are instances of these `FunctionX` types.
 
 ```Scala
 val simpleIncrementor = new Function1[Int, Int] {
-	override def apply(arg: Int): Int = arg + 1
+  override def apply(arg: Int): Int = arg + 1
 }
 
 simpleIncrementor.apply(23) // 24
@@ -1187,7 +1192,7 @@ simpleIncrementor(23) // 24 - same as calling apply
 
 // function with 2 arguments and String return type
 val stringConcatenator = new Function2[String, String, String] {
-	override def apply(arg1: String, arg2: String): String = arg1 + arg2
+  override def apply(arg1: String, arg2: String): String = arg1 + arg2
 }
 
 stringConcatenator("Woo ", "Scala") // Woo Scala
@@ -1196,7 +1201,7 @@ stringConcatenator("Woo ", "Scala") // Woo Scala
 ### Function Types
 Scala supports these function types out of the box.
 
-For example, a function that takes in an Int and doubles it can be written as:
+For example, a function that takes in an `Int` and doubles it can be written as:
 
 ```Scala
 val doubler: Int => Int = (x: Int) => 2 * x // specifying function type
@@ -1210,7 +1215,7 @@ This is equivalent to:
 
 ```Scala
 val doubler: Function1[Int, Int] = new Function1[Int, Int] {
-	override def apply(x: Int) = 2 * x
+  override def apply(x: Int) = 2 * x
 }
 ```
 
@@ -1228,11 +1233,11 @@ Instantiating a function is still tied to object-oriented programming but the sy
 
 Anonymous functions consist of `paramaters => expression`, the return type is always inferred. 
 
-If you specify the function type, you don't need to specify the parameter and return types (since you have already).
+If you specify the function type, you don't need to specify the parameter and return types (since you already have).
 
 ```Scala
 val doubler = new Function1[Int, Int] {
-	override def apply(x: Int) = x * 2
+  override def apply(x: Int) = x * 2
 }
 
 // can be written as 
@@ -1291,7 +1296,7 @@ val doubledInts = ints.map(i => i * 2)
 val doubledInts = ints.map(_ * 2)
 ```
 
-For example, on a `List[Int` the `map` method expects a function that transforms one Int into another Int. Similarly, when called on a `List[Int`, the `filter` method expects a function that takes an Int and returns a Boolean.
+For example, on a `List[Int]` the `map` method expects a function that transforms one `Int` into another `Int`. Similarly, when called on a `List[Int]`, the `filter` method expects a function that takes an `Int` and returns a `Boolean`.
 
 ```Scala
 def double(i: Int): Int = i * 2
@@ -1342,8 +1347,7 @@ println(preciseFormat(Math.PI)) // 3.14159265
 Higher-order functions let you abstract functionality and reduce code duplication.
 
 ```Scala
-def stats(s: String, predicate: Char => Boolean): Int = 			
-	s.count(predicate)
+def stats(s: String, predicate: Char => Boolean): Int = s.count(predicate)
 
 def size(s: String): Int = stats(s, _ => true)
 def countLetters(s: String): Int = stats(s, _.isLetter)
@@ -1372,9 +1376,9 @@ case object Letter extends Mode
 case object Digits extends Mode
 
 def predicateSelector(mode: Mode): Char => Boolean = mode match {
-	case Length => _ => true
-	case Letters = _.isLetter
-	case Digits = _.isDigit
+  case Length => _ => true
+  case Letters = _.isLetter
+  case Digits = _.isDigit
 }
 
 stats(text, predicateSelector(Length)) // count all chars
@@ -1386,11 +1390,11 @@ Scala Lists (and other sequences) have several useful methods, including: `map`,
 
 The `map` method takes an anonymous function (lambda) as its argument and this function is applied to every element in the List.
 
-The `flatMap` method concatenates any Lists produced by the anonymous function and raturns a bigger list.
+The `flatMap` method concatenates any Lists produced by the anonymous function and raturns a bigger List.
 
 The `filter` method takes an anonymous function and returns only those elements for which the condition evaluates as true. 
 
-You can chain, `map`, `flatMap` and `filter`.
+You can chain `map`, `flatMap` and `filter`.
 
 These methods let you iterate through collections without using loops or iterators.
 
@@ -1446,18 +1450,18 @@ val allPairs = List(1,2,3).flatMap(number => List('a','b','c').map(letter => s"$
 
 // for comprehension
 val alternativePairs = for {
-	number <- List(1,2,3)
-	letter <- List('a', 'b', 'c')
-}   yield s"$number-$letter" 
+  number <- List(1,2,3)
+  letter <- List('a', 'b', 'c')
+} yield s"$number-$letter" 
 ```
 
 If you want to include filtering in a for comprehension, you include a guard.
 
 ```Scala
 val filteredPairs = for {
-	number <- List(1,2,3) if number % 2 == 0
-	letter <- List('a', 'b', 'c')
-}   yield s"$number-$letter" 
+  number <- List(1,2,3) if number % 2 == 0
+  letter <- List('a', 'b', 'c')
+} yield s"$number-$letter" 
 ```
 
 You can still perform side effects with for comprehensions.
@@ -1465,7 +1469,7 @@ You can still perform side effects with for comprehensions.
 ```Scala
 // equivalent to using foreach
 for {
-	n <- numbers
+  n <- numbers
 } println(n)
 ```
 
@@ -1497,19 +1501,14 @@ Mutable collections are found in the `scala.collections.mutable` package.
 
 Their hierarchy closely mirrors immutable collections but the implementations of  `Set`, `Seq` and `Map` differ slightly.
 
-`Set` is extended by `HashSet` and `LinkedHashSet`.
+- `Set` is extended by `HashSet` and `LinkedHashSet`.
+- `Map` is extended by `HashMap` and `MultiMap`.
+- `Seq` is extended by `IndexedSeq`, `Buffer` and `LinearSeq`. 
 
-`Map` is extended by `HashMap` and `MultiMap`.
-
-`Seq` is extended by `IndexedSeq`, `Buffer` and `LinearSeq`. 
-
-There are also ower level implementations:
-
-`IndexedSeq` is extended by `StringBuilder` and `ArrayBuffer`.
-
-`Buffer` is extended by `ArrayBuffer` and `ListBuffer`.
-
-`LinearSeq` is extended by `LinkedList` and `MutableList`.
+There are also lower-level implementations:
+- `IndexedSeq` is extended by `StringBuilder` and `ArrayBuffer`.
+- `Buffer` is extended by `ArrayBuffer` and `ListBuffer`.
+- `LinearSeq` is extended by `LinkedList` and `MutableList`.
 
 ### ArrayBuffers
 An `ArrayBuffer` is similar to a Java `ArrayList`. It's mutable and has methods similar to Java sequences.
@@ -1552,8 +1551,8 @@ The `head`, `tail` and `isEmpty` methods are fast: O(1). Most other operations (
 - class `::`
 
 `List`s can be prepended and appended with elements:
-`+:` prepends an element
-`:+` appends an element
+- `+:` prepends an element
+- `:+` appends an element
 
 (`:` always points to the `List`)
 
@@ -1692,7 +1691,7 @@ List(1,2,3).filterNot(_ > 2) // List(1,2)
 List(1,2,3,3,3).distinct // List(1,2,3)
 ```
 
-`sorted` returns a new `List` with the elements sorted acording to their given order.
+`sorted` returns a new `List` with the elements sorted according to their given order.
 
 `sortBy` returns a new `List` with the elements sorted by a specified criteria. You can combine multiple criteria using a tuple. The first criteria has precedence over the second and so on.
 
@@ -1728,7 +1727,7 @@ List(1.4, 2.5, 3.6) // 7.5
 
 ```Scala
 List("hello", "world", "scala").groupBy(_.contains("a")) // Map(false -> List("hello", "world"), true -> List("scala"))
-										
+
 List("hello", "world", "scala").groupBy(_.length)) // Map(5 -> List, "hello", "world", "scala")
 
 List(0,1,2).groupBy(_ % 2) // Map(0 -> List(0,2), 1 -> List(1))
@@ -1758,7 +1757,7 @@ def getSurnames(contacts: List[Contact]): List[String] =
 `flatten` lets you combine two `List`s into one to produce a non-nested structure. Here `map` by itself would give you `List[List[ContactNumber]]`.
 
 ```Scala
-List(List(), List(1,2), Lis(3)).flatten // List(1,2,3)
+List(List(), List(1,2), List(3)).flatten // List(1,2,3)
 
 def getNumbers(contacts: List[Contact]): List[ContactNumber] =
 	contacts.map(_.numbers).flatten
@@ -1820,7 +1819,7 @@ Linear `Sequence`s don't have constant time access and only guarantee the orderi
 ### Arrays
 `Array`s in Scala are the equivalent of simple Java arrays.
 
-They can be manually constructed with predefined lengths, they are mutable, have fast indexing and are completely interoperable with Java's native arrays.
+They can be manually constructed with predefined lengths, are mutable, have fast indexing and are completely interoperable with Java's native arrays.
 
 You can create an array without specifying contents using `Array.ofDim[type](numberOfElements)`. The elements will be set to their default values: 0, false, null.
 
@@ -1859,13 +1858,13 @@ val maxCapacity = 1000000
 
 def getWriteTime(collection: Seq[Int]): Double = {  
   val r = new Random  
- val times = for {  
+  val times = for {  
     it <- 1 to maxRuns  
- } yield {  
+  } yield {  
     val currentTime = System.nanoTime()  
     collection.updated(r.nextInt(maxCapacity), r.nextInt())  
     System.nanoTime() - currentTime  
- }  
+}  
   
   times.sum * 1.0 / maxRuns  
 }  
@@ -1914,7 +1913,7 @@ def getTopics(students: Set[Students]): Set[String] =
 def getTopics(students: Set[Student]): Set[String] = 
 	students.flatMap(_.topics)
 
-deg getTopicsForStudentIIds(students: Set[Student], ids: Set[Int]): Set[String] = 
+def getTopicsForStudentIIds(students: Set[Student], ids: Set[Int]): Set[String] = 
 	for {
 		student <- student
 		id <- ids
@@ -1923,13 +1922,13 @@ deg getTopicsForStudentIIds(students: Set[Student], ids: Set[Int]): Set[String] 
 	} yield topic
 ```
 
-Sets mimic the concept of a mathematical set. You ccan check the similarities and differences of two sets with `union`, `intersect` and `diff`.
+Sets mimic the concept of a mathematical set. You can check the similarities and differences of two sets with `union`, `intersect` and `diff`.
 
 `union` (or `++`) takes another Set as its parameter and returns a new Set containing all the values from both Sets.
 
-`intersect` (or `&`) takes another set as its parameter and returns a new Set containing only the values shared by both Sets.
+`intersect` (or `&`) takes another Set as its parameter and returns a new Set containing only the values shared by both Sets.
 
-`diff` (or `--`) takes another set as its parameter and returns a new Set containing the elements in the orginal Set that are not in the other Set.
+`diff` (or `--`) takes another Set as its parameter and returns a new Set containing the elements in the orginal Set that are not in the other Set.
 
 ```Scala
 Set(1,0,2).union(Set(1,3)) // Set(0,1,2,3)
@@ -1985,7 +1984,7 @@ println(aTuple.copy(_2 = "goodbye Java"))  // replace second element in copy
 println(aTuple.swap)  // ("hello, Scala", 2)
 ```
 
-You can destructure tuples and assign the values to variables. This can be useful where a method return disparate data and a class would feel like overkill. You can also discard values you're not interested in.
+You can destructure tuples and assign the values to variables. This can be useful where a method returns disparate data and a class would feel like overkill. You can also discard values you're not interested in.
 
 ```Scala
 def getStockInfo = {
@@ -2031,19 +2030,19 @@ val aNewPhonebook = aPhoneBook + aNewPairing
 val aSmallerPhonebook = aPhonebook - aKey
 ```
 
-A `Map`s keys are unique, so if you add an entry for an existing key it's value will be replaced n the new `Map`.
+A `Map`'s keys are unique, so if you add an entry for an existing key its value will be replaced in the new `Map`.
 
 ```Scala
 Map(1 -> "hello") + (1 -> "Scala") // Map(1 -> "Scala")
 ```
 
-You can merge the entries of two `Map`s wih `++`.
+You can merge the entries of two `Map`s with `++`.
 
 ```Scala
 Map(1 -> "Hello") ++ Map(2 -> "Scala") // Map(1 -> "Hello", 2 -> "Scala")
 ```
 
-You can remove multiple entries by using `--` and providing their keys in an iterable (usually Set or List). Removing a non-existant key just returns the original Map.
+You can remove multiple entries by using `--` and providing their keys in an iterable (usually a Set or List). Removing a non-existant key just returns the original Map.
 
 ```Scala
 Map("Rome" -> "Italy", "London" -> "UK") -- Set("Rome", "Paris") // Map("London" -> "UK")
@@ -2068,13 +2067,12 @@ When you use `flatMap` on a `Map`, the compiler transforms it into an iterable o
 ```Scala
 def filterByStudentId(registrations: map[ExamSession, List[Sudent]], ids: List[Int]): Map[ExamSession, List[Student]] =
 	registrations.flatMap { case (examSession, students) =>
-		val matches = sudents.filter(student =>
-			ids.contains(student.id))
+		val matches = sudents.filter(student => ids.contains(student.id))
 		if(matches.nonEmpty) List(examSession -> matches)
 		else List.empty
 	}
 
-def filterByStudentId(registrations: map[ExamSession, List[Sudent]], ids: List[Int]): Map[ExamSession, List[Student]] =
+def filterByStudentId(registrations: map[ExamSession, List[Student]], ids: List[Int]): Map[ExamSession, List[Student]] =
 	for {
 		(examSession, students) <- registrations
 		matches = students.filter(student => id.contains(student.id))
@@ -2082,7 +2080,7 @@ def filterByStudentId(registrations: map[ExamSession, List[Sudent]], ids: List[I
 	} yield examSession -> matches
 ```
 
-You can operate on just keys using `filterKeys` or values using `mapValues`.
+You can operate on just keys using `filterKeys` or just values using `mapValues`.
 
 ```Scala
 println(phonebook.map(pair => pair._1.toLowerCase -> pair._2))
@@ -2103,11 +2101,11 @@ ratings.foreach {
 ```
 
 ### Working with Maps
-`get` takes a key as a parameter and returns an Option which resolves to Some if the key exists, None if it doesn't.
+`get` takes a key as a parameter and returns an `Option` which resolves to `Some` if the key exists, `None` if it doesn't.
 
 `getOrElse` takes a key and an expression. If the key exists, it returns its associated value. If it doesn't, it returns the value provided by the expression.
 
-`apply` takes a key and returns the value associated with that key if present. It throws a NoSuchElement exception otherwise. 
+`apply` takes a key and returns the value associated with that key, if present. It throws a `NoSuchElement` exception otherwise. 
 
 ```Scala
 Map(1 -> "a", 2 -> "b").get(2) // Some(b)
@@ -2128,7 +2126,7 @@ Map(1 -> "a", 2 -> "b").apply(2) // b
 `maxBy` takes in a function and returns the first element which yields the largest value measured by the function.
 
 ### Common Sequence Methods
-Common sequence methods inlcude:
+Common sequence methods include:
 - `map`
 - `filter`
 - `foreach`
@@ -2145,7 +2143,7 @@ These work on all of the "sequence" collections, such as `Array`, `ArrayBuffer`,
 It's common to use `map` to return a `List` with a different type. For example:
 
 ```Scala
-vals numsLessThanFive = nums.map(_ < 5) // List(true, true, true, true, false)
+val numsLessThanFive = nums.map(_ < 5) // List(true, true, true, true, false)
 ``` 
 
 `filter` creates a new `List` with elements that pass the predicate.
@@ -2253,7 +2251,7 @@ states.filterinPlace((k,v) => k == "AK")
 ### "Pseudo Collections"
 Functional programming doesn't use null values, and so Scala's solution is to use constructs like `Option`, `Some` and `None`.
 
-`Option` and `Try` are useful when you have unsafe methods, which might cayse a `NullPointerException`, saving you from having to check for the method returning a null value.
+`Option` and `Try` are useful when you have unsafe methods, which might cause a `NullPointerException`, saving you from having to check for the method returning a null value.
 
 ### Option, Some, None
 An `Option` is like a "collection" containing at most one element. It acts as a wrapper for a value that might or might not be present.
@@ -2333,7 +2331,7 @@ list.find(_ % 2 == 0) // Some(2)
 
 `get` is an unsafe way to retrieve a value from an `Option`. In general, don't use it. `getOrElse` is safer and will return the `Option`'s value if it's non-empty, or else will return the default provided.
 
-You can used `Option`s with pattern matching and operate on them with `map`, `flatMap`, `filter` and for comprehensions.
+You can use `Option`s with pattern matching and operate on them with `map`, `flatMap`, `filter` and for comprehensions.
 
 ```Scala
 // using chained functions
@@ -2376,7 +2374,7 @@ def ownerDrivingLicence(car: Car): Option[String] =
 
 When you use `flatten` on an instance of `Option[Option[A]]` and it returns an `Option[A]`:
 - If the outer optional value is `Some`, it returns the inner instance of `Option`
-- If the outer optional valie is `None`, it returns it.
+- If the outer optional value is `None`, it returns it.
 
 `flatMap` lets you combine the functionality of `map` and `flatten`.
 
@@ -2411,7 +2409,7 @@ def ownerDrivingLicence(optCar: Option[Car], ownerName: String): Option[String] 
 	} yield drivingLicence.toUppercase // can modify yield value before returning
 ```
 
-When using `Option`s, you only need to think about wheter you got a `Some` or `None` when you finally handle the result value in a `match` expression.
+When using `Option`s, you only need to think about whether you got a `Some` or `None` when you finally handle the result value in a `match` expression.
 
 ```Scala
 toInt(x) match {
@@ -2420,7 +2418,7 @@ toInt(x) match {
 }
 ```
 
-`Option`s are useful where a value is optional and you want to avoid nulls, such as line2 in an address.
+`Option`s are useful where a value is optional and you want to avoid nulls, such as line 2 in an address.
 
 ```Scala
 class Address (
@@ -2550,7 +2548,7 @@ def registerForNextExamSession(student: Student, topic: String): Try[Registratio
 	}
 ```
 
-You can use a for comprehension to express a chain of `flatMap` and `map` operations to improve ther readability.
+You can use a for comprehension to express a chain of `flatMap` and `map` operations to improve their readability.
 
 ```Scala
 def registerForNextExamSession(student: Student, topic: String): Try[Registration] = 
@@ -2586,7 +2584,7 @@ val betterFallback = betterUnsafeMethod() orElse betterBackupMethod()
 ### Either
 `Either` is an immutable disjoint union used to represent a value with one of two possible types. An instance of Either is either `scala.util.Left` or `scala.util.Right`. It's most commonly used for validation. The left value is used for failure and the right value for success.
 
-An instance of `Either[A,B]` can represent a faled outcome by returnng type `A` and a successful outcome by retuning type `B`. Compared to `Option`, `Either` lets you prvide more information when something fails.
+An instance of `Either[A,B]` can represent a failed outcome by returning type `A` and a successful outcome by returning type `B`. Compared to `Option`, `Either` lets you provide more information when something fails.
 
 ```Scala
 private def containsOnlyDigits(phoneNumber: String): Boolean = ???
@@ -2594,13 +2592,13 @@ private def hasExpectedSize(phoneNumber: String): Boolean = ???
 
 def validatePhoneNumber(phoneNumber: String): Either[String, String] =
 	if(!containsOnlyDiigits(phoneNumber))
-		Left("A phone number should only contain dgits")
+		Left("A phone number should only contain digits")
 	else if(!hasExpectedSize(phoneNumber))
 		Left("Unexpected number of digts. Expected 10 digits.")
 	else Right(phoneNumber)
 ```
 
-You cannot initialize `Either` directly, as it's asbstract. For an instance of `Either[A,B]`, provide a value of type `A` to create a `Left[A,B]` and a value of type `B` to create a `Right[A,B]`.
+You cannot intialize `Either` directly, as it's abstract. For an instance of `Either[A,B]`, provide a value of type `A` to create a `Left[A,B]` and a value of type `B` to create a `Right[A,B]`.
 
 You can use pattern matching on `Either`. You need to provide case clauses for both `Left` and `Right` because `Either` is a sealed class. 
 
@@ -2616,7 +2614,7 @@ You can use `map` to transform the value wrapped into a `Left` or `Right` instan
 
 When applied on its left projection, it takes a function of type `A => C` to produce a value of type `Either[C,B]`. When working on its right projection, it takes a parameter of type `B => C` to produce a value of type `Either[A,C]`. 
 
-If your instance matches the selected side, it applies the function to its value. If not, it returns the instance wthout perfrming any transformation.
+If your instance matches the selected side, it applies the function to its value. If not, it returns the instance without performing any transformation.
 
 ```Scala
 case class Pass(score: Int) {
@@ -2633,7 +2631,7 @@ When applied to the left, it takes a function of type `A => Either[C,D]` and ret
 
 When transforming the right projection, it takes a function of type `B => Either[C,D]` and returns a value of type `Either[AC, D]`; the compiler infers `AC` as the type of the common superclass between `A` and `C`.
 
-If your instance matches the selected side, it applies the function t its content to produce a new `Either` value. If not, no transformation happens.
+If your instance matches the selected side, it applies the function to its content to produce a new `Either` value. If not, no transformation happens.
 
 ```Scala
 def combine(outcomeA: Either[String, Pass], outcomeB: Either[String, Pass]): Either[String, Pass] =
@@ -2661,7 +2659,7 @@ def combine(outcomeA: Either[String, Pass], outcomeB: Either[String, Pass]): Eit
 ### Working with Either
 You can retrieve the value of an `Either` using `getOrElse` with the `left` and `right` functions.
 
-`isLeft` returns true if the instance of of type `Left`, false otherwise.
+`isLeft` returns true if the instance is of type `Left`, false otherwise.
 
 `isRight` returns true if the instance is of type `Right`, false otherwise.
 
@@ -2737,7 +2735,7 @@ val listDescription = aList match {
 }
 ```
 
-If a pattern match doesn't match anything it'll throw a `MatchError` so it's good practice to include a catch all case. 
+If a pattern match doesn't match anything, it'll throw a `MatchError` so it's good practice to include a catch all case. 
 
 Catch blocks and generators are also based on pattern matching.
 
@@ -2747,8 +2745,8 @@ try {
   // do something 
 } catch {  
   case e: RuntimeException => "runtime"  
-	case npe: NullPointerException => "npe"  
-	case _ => "something else"  
+  case npe: NullPointerException => "npe"  
+  case _ => "something else"  
 }  
 
 // equivalent to 
@@ -2757,9 +2755,9 @@ try {
 } catch (e) {  
   e match {  
     case e: RuntimeException => "runtime"  
-		case npe: NullPointerException => "npe"  
-		case _ => "something else"  
-	 }  
+	case npe: NullPointerException => "npe"  
+	case _ => "something else"  
+  }  
 }
 
 // generators are also based on pattern matching 
@@ -2868,7 +2866,7 @@ def getOrderDetails(orderId: Int)(using ec: ExecutionContext): Future[OrderDetai
 	for {
 		order <- getOrder(orderId)
 		user <- getUser(order.userId)
-		product <- getProduct(oorder.productId)
+		product <- getProduct(order.productId)
 	} yield OrderDetails(order, user, product)
 ```
 
@@ -2885,7 +2883,7 @@ def getOrderDetails(orderId: Int)(using ec: ExecutionContext): Future[OrderDetai
 	} yield OrderDetails(order, user, product)
 ```
 
-When morking with multiple asynchronous computations that run independently and in parallel, Scala offers several methods for coordinating them.
+When working with multiple asynchronous computations that run independently and in parallel, Scala offers several methods for coordinating them.
 
 `firstCompletedOf` takes in a sequence of `Future`s and returns a `Future` that contains the first instance in the sequence to complete, whether successfully or unsuccessfully.
 
@@ -2966,9 +2964,9 @@ The main thread doesn't stop when `getStockPrice` is called, or when the for exp
 When using asynchronous computations, you shouldn't block a thread waiting for a `Future` to complete. But there are cases where you might need to, such as in testing. You can do this using `Await.ready(Future(), atMost = 5 seconds)` or `Await.result(Future(), atMost = 5 seconds)` to throw an exception on failure or timeout.
 
 ### Partial Functions
-Partial functions are functions that don't provide implementations for every possible input value they can be given. They handle only a subset of of possible data.
+Partial functions are functions that don't provide implementations for every possible input value they can be given. They handle only a subset of possible data.
 
-Partial functions are based on pattern matching. You can view a partial function as an anonymous function with one or more case classes in its body. If your input doesn't match any of the case clauses, it will throw a `MatchError` exception at runtime.
+Partial functions are based on pattern matching. You can view a partial function as an anonymous function with one or more case clauses in its body. If your input doesn't match any of the case clauses, it will throw a `MatchError` exception at runtime.
 
 They can be used to abstract commonalities between functions.
 
@@ -3022,8 +3020,7 @@ val gof: String => Boolean = f.andThen(g)
 With partial functions, you might want to combine partial functions as fallbacks if the previous partial function couldn't match the given input. You can compose partial functions as fallbacks using `orElse`.
 
 ```Scala
-val sqrt: PartialFunction[Int, Double] = 
-	{ case x if x >= 0 => Math.sqrt(x)}
+val sqrt: PartialFunction[Int, Double] = { case x if x >= 0 => Math.sqrt(x)}
 val zero: PartialFunction[Int, Double] = { case _ => 0 }
 val value: PartialFunction[Int, Double] = { case x => x }
 
@@ -3046,14 +3043,14 @@ try {
 }
 ```
 
-The `catch` keyword follows partial functions that identify which exceptions it should handle: if an exception doesn't match it, it won't intercept it.
+The `catch` keyword follows partial functions that identify which exceptions it should handle. If an exception doesn't match it, it won't intercept it.
 
 ## More Advanced Features
 
 ### Lazy Evaluation
 Lazy evaluation means an expression is not evaluated until it's first used. It's useful in infinite collections.
 
-By default, Scala evaluates a functon parameter by value (eager evaluation). It computes its value and then passes it to the function. There are cases, however, when you may want to only evaluate a parameter when the function invokes it, and not before. This is called parameter evaluation by name (or lazy evaluation). 
+By default, Scala evaluates a functiion parameter by value (eager evaluation). It computes its value and then passes it to the function. There are cases, however, when you may want to only evaluate a parameter when the function invokes it, and not before. This is called parameter evaluation by name (or lazy evaluation). 
 
 `=>` tells the program to evaluate a parameter by name. The compiler transforms it into a function that takes no parameters and returns the evaluated value.   
 
@@ -3146,9 +3143,8 @@ ioA.unsafeRunSync() // 12
 `flatMap` combines two side effects sequentially. It takes a function and returns an `IO`.
 
 ```Scala
-val ioA = IO("Hello World").flatMap(n =>
-	IO(println(n.length)))
-								   )
+val ioA = IO("Hello World").flatMap(n => IO(println(n.length)))
+
 ioA.unsafeRunSync() // 12
 ```
 
@@ -3164,7 +3160,7 @@ def rollDieTwice: IO[Int] =
 	} yield n1 + n2
 ```
 
-`parSequence` (which requires a `ContextShift[IO]` implicit parameter) lets you execute multiple side effects in parallel, returning a value of type `IO[List[A]]`. It's analogous to `Future.sequence` while `ContextShift[IO]` is equivalent to `ExecutionContext` by definign what resources are available to your program.
+`parSequence` (which requires a `ContextShift[IO]` implicit parameter) lets you execute multiple side effects in parallel, returning a value of type `IO[List[A]]`. It's analogous to `Future.sequence` while `ContextShift[IO]` is equivalent to `ExecutionContext` by defining what resources are available to your program.
 
 ```Scala
 def rollDie(n: Int): IO[Int] = IO {
@@ -3172,19 +3168,51 @@ def rollDie(n: Int): IO[Int] = IO {
 	Random.nextInt(n) + 1
 }
 
-def rollDice(using cs: ContextShift[IO]): I[List[Int]] = {
+def rollDice(using cs: ContextShift[IO]): IO[List[Int]] = {
 	List(rollDie(12), rollDie(8), rollDie(8)).parSequence
 }
 
 rollDice.unsafeRunSync() // List(11,7,5)
 ```
 
+### HTTP APIs
+There are multiple external libraries for building HTTP servers with Scala, such as http4s.
+
+With http4s, you link your routes to your business logic through instances of `HttpRoutes`. Each `HttpRoutes` uses partial functions to match an incoming HTTP request and produce a HTTP response together with a side effect, such as an IO read/write or a connection to a third party API. 
+
+A `HttpRoutes[IO]` matches a request and produces a response wrapped in an IO instance to represent possible side effects. Your executable object extends `IOApp` and uses a `BlazeServerBuilder` to bind to a given port and host and to mount multiple instances of `HttpRoutes[IO]` to define the API of a HTTP server using a `fs2.Stream` instance.
+
+`IOApp` is an interface that requires you to define a `run` function.
+
+`BlazeServerBuilder` defines a HTTP server with an address, port, and routes using a stream to process requests. `ExecutionContext.global` provides a thread pool to use while streaming.
+
+`BlazeServerBuilder[IO]` with `bindHttp` provides a port and host. `withHttpApp` attaches a group of routes with a prefix to your server. Finally, `serve` transfors the Blaze definition into a stream that represents your HTTP server.
+
+```Scala
+object DemoApp extends IOApp {
+	private val httpApp = Router(
+		"/" -> PingApi().routes
+	).orNotFound
+	
+	override def run(args: Lst[String]): IO[ExitCode] =
+		stream(args).compile.drain.as(ExitCode.Success)
+	
+	private def stream(args: List[String]): fs2.Stream[IO, ExitCode] =
+		BlazeServerBuilder[IO](ExecutionContext.global)
+		.bindHttp(8000, "0.0.0.0")
+		.withHttpApp(httpApp)
+		.serve
+}
+```
+
+It's a good practice to have a few endpoints to ensure yoour system is responsive and healthy. A `healthCheck` endpoint is useful for monitoring systems, while a `ping` endpoint lets you perform a lightweight request to check that they can successfully communicate with the system. 
+
 ### Implicits
 Implicits are used for 
 - implicit arguments
 - implicit conversions
 
-If you define a method with implicit arguments you can call it without passing any arguments. The compiler understands that the method takes an implicit argument and looks for implicit values within the function's scope (this is called "implicit resolution").
+If you define a method with implicit arguments, you can call it without passing any arguments. The compiler understands that the method takes an implicit argument and looks for implicit values within the function's scope (this is called "implicit resolution").
 
 Implicit parameters are marked with `implicit` (Scala 2) or `using` (Scala 3). The implicit values themselves are marked with `implicit` (Scala 2) or `given` (Scala 3).
 
@@ -3298,12 +3326,11 @@ trait Combinator[A] { // monoid
 	def combine(x: A, y: A): A
 }
 
-def combineAll[A](list: List[A])(using combinator: Combinator[A]): A = list.reduce((a,b) => combinator.combine(a,b))
+def combineAll[A](list: List[A])(using combinator: Combinator[A]): A = 
+  list.reduce((a,b) => combinator.combine(a,b))
 
 given intCombinator: Combinator[Int] = new Combinator[Int] {
-
-override def combine(x: Int, y: Int) = x + y
-
+  override def combine(x: Int, y: Int) = x + 
 }
 
 val theSum = combineAll(aList) // (intCombinator)
@@ -3516,7 +3543,7 @@ object Person {
 }
 ```
 
-When using case classes, you can request that the coder be generated automatically. The generated encoder analyzes the structure of the case class to define a new encoder.
+When using case classes, you can request that the encoder be generated automatically. The generated encoder analyzes the structure of the case class to define a new encoder.
 
 ```Scala
 import io.circe.generic.semiauto._
@@ -3528,7 +3555,7 @@ object Person {
 }
 ```
 
-The `Decoder` trait defines how to parse a JSON object into a class instance. Once you have defined a decode you can use the `decode` function from `io.circe.parser._`, which returns ether a class instance or an error.
+The `Decoder` trait defines how to parse a JSON object into a class instance. Once you have defined a decoder, you can use the `decode` function from `io.circe.parser._`, which returns ether a class instance or an error.
 
 circe offers predefined decoders for commonly used types. Using `""""""` lets you automatically escape special characters, such as " " or  \.
 
@@ -3586,9 +3613,8 @@ LocalDate.of(1981,7,25).asJson // "25/07/1981"
 decode[LocalDate](""" "11/22/1987" """) // Right(1987-11-22)
 ```
 
-## sbt and ScalaTest
-### sbt
-While you can use several build tools with Scala (such as Ant, Maven, Gradle), sbt was the first designed specifically for Scala, and is upported by Lightbend.
+## sbt
+While you can use several build tools with Scala (such as Ant, Maven, Gradle), sbt was the first designed specifically for Scala, and is supported by Lightbend.
 
 sbt uses a standard project directory structure.
 
@@ -3600,20 +3626,16 @@ src/
    |-- java/
    |-- resources/
    |-- scala/
-|-- test/
+-- test/
    |-- java/
    |-- resources/
    |-- scala/
 target/
 ```
 
-You can scaffold a Hello World project with
+The `target` directory will contain all the binaries compiled by the Scala compiler. `project` will contain additional files, such as for customizing sbt.
 
-```
-sbt new sbt/scala-seed.g8
-```
-
-The `build.sbt` file lets you specify versions and dependencies. 
+The `build.sbt` file lets you assign project-scoped variables to specify versions and dependencies. 
 
 ```
 name := "HelloWorld"
@@ -3621,8 +3643,278 @@ version := "1.0"
 scalaVersion := "2.13.8"
 ```
 
+Running `sbt` in a directory that contains a `build.sbt` file will create a new sbt project.
+
+You can scaffold a Hello World project with
+
+```
+sbt new sbt/scala-seed.g8
+```
+
+Inside `project/` will be a `build.properties` file, containing the sbt version.
+
+Your Scala application code goes inside `src/main/scala/package_name`. 
+
+Runing `sbt compile` will compile the Scala code into bytecode.
+
+You can run the application using `runMain package_name.Main`.
+
+`~compile` will start a watch process for `Main.scala` and recompile your code as you edit it.
+
+If you modify `build.sbt`, such as by adding external dependencies, you will have to restart sbt.
+
+### Installing Dependencies
+External dependencies are added to an sbt project by modifying the `libraryDependencies` variable in `build.sbt`.
+
+```Scala
+libraryDependencies += "com.lihaoyi" %% "fansi" % "0.4.0"
+```
+
+Dependencies will be downloaded and stored in `/target`. 
+
+Using `%%` means sbt will insert the Scala version. If you only use `%`, you will need to specify the Scala version.
+
+```Scala
+libraryDependencies += "com.lihaoyi" %% "fansi" % "0.4.0"
+// or
+libraryDependencies += "com.lihaoyi" % "fansi_2.13" % "0.4.0"
+```
+
+### Tests
+You can add multiple dependencies using a `Seq`. Test-specific dependencies are marked with `% Test`, which makes them only available within the `test` directory.
+
+```Scala
+libraryDependencies ++= Seq(
+	"com.lihaoyi" %% "fansi" % "0.4.0",
+	"org.scalatest" %% "scalatest" % "3.2.13" % Test
+	)
+```
+
+Running `test` will run all the tests in `/test`. You can run only one test using `test:testOnly package_name.filename`.
+
+All the commands from the sbt console can be run outside the console by prefixing them with `sbt`.
+
+```bash
+sbt compile
+
+sbt test
+```
+
+### Modules
+Variables can be globally scoped under the `ThisBuild` constant.
+
+```Scala
+ThisBuild / scalaVersion := "2.13.8"
+```
+
+You can create modules and sbt will create the appropriate sub-directories to hold these independent modules.
+
+In the sbt console, you can use `project module_name` to switch to a specific module and only run sbt commands in that scope.
+
+```Scala
+lazy val core = (project in file("core"))
+lazy val server = (project in file("server")).dependsOn(core)
+
+lazy val root = (project in file(".").aggregate(core, server))
+
+// directory structure
+core/
+project/
+server/
+target/
+```
+
+You can specify module-specific settings in the main `build.sbt` file. 
+
+```Scala
+lazy val core = (project in file("core")).settings(
+	// module-specific settings go here
+)
+```
+
+Modules can also contain their own `build.sbt` files to specify module-specific settings. For small to medium-sized projects, it's a good practice to store all settings in the main `build.sbt`.
+
+If `build.sbt` grows too big, you might want to store some variables in `/project`.
+
+```Scala
+// project/Constants.scala
+objects Constants {
+	val rootPackage = "com.typesafe"
+}
+```
+
+### Plugins
+Plugins help extend sbt with custom features which can be published and shared between multiple teams. 
+
+Some common uses of plugins are:
+- packaging plugins to create jars, exe, and other executables 
+- static code analysis plugins
+- code generation plugins
+
+Inside `project/` create a file called `plugins.sbt`.
+
+```Scala
+addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "1.2.0")
+```
+
+You can enable plugins via `build.sbt`.
+
+```Scala
+lazy val core = (project in file("core")).settings(
+	assembly / mainClass := Some("package_name.filename")
+)
+```
+
+Plugins can be local to a project or globally defined for all sbt projects. Global plugins are stored in `$HOME/.sbt/1.0/plugins`. When sbt starts, it will load all plugins from the global path.
+
+### Resolvers
+Resolvers are locations, apart from the Maven Central repository, that sbt can look into when you want to download and install additional libraries.
+
+This is especially used by larger companies that publish packages to their own repositories for different teams to use.
+
+```Scala
+resolvers += Resolver.url("my-ny-repo", url("https://mycompany.org/repo-releases"))
+```
+
+You can also add an internal resolver to get sbt to look for artifacts and binaries locally. This will look for dependencies in the `.m2/` directory.
+
+```Scala
+resolvers += Resolver.mavenLocal
+```
+
+### Custom Tasks
+Apart from the built-in sbt tasks, you can also create custom tasks.
+
+```Scala
+object CustomTaskPrinter {
+	def print() = {
+		println("Making a custom task...")
+	}
+}
+
+object StringTask {
+	def strTask(): String = {
+		UUID.randomUUID().toString()
+	}
+}
+```
+
+You define custom tasks in `build.sbt`. Here, `taskKey[Unit]` means that the task does an action and returns nothing.
+
+```Scala
+lazy val printerTask = taskKey[Unit]("Simple custom task")
+lazy val uuidStringTask = taskKey[String]("Generate string uuid task")
+
+// bind code to task object
+uuidStringTask := { 
+	StringTask.strTask() 
+}
+
+printerTask := {
+	val uuid = uuidStringTask.value
+	println("Generated uuid is : " + uuid)
+	CustomTaskPrinter.print()
+}
+```
+
+Now you can run the command `printerTask` from the sbt console.
+
+### Custom Settings
+An sbt **task** is something that can be invoked and executed each time. You can think of it like a `def` in Scala. 
+
+By contrast, a **setting** is evaluated at the start of the sbt session and after that is memoized, like a `val` in Scala.
+
+You use `settingKey` to define a setting. When you start an sbt session, settings will be evaluated.
+
+```Scala
+// build.sbt
+lazy val uuidStringSetting = settingKey[String]("Generate string uuid task")
+
+uuidStringSetting := {
+	val uuid = StringTask.strTask()
+	println("Evaluating settings... " + uuid)
+	uuid
+}
+
+printerTask := {
+	val uuidStringTask.value
+	println("Generated uuid from task: " + uuid)
+	val uuidSetting = uuidStringSetting.value
+	println("Generated uuid from setting: " + uuidSetting)
+	CustomTaskPrinter.print()
+}
+```
+
+### Command Aliases
+sbt supports the ability to set aliases, similar to in Unix-based Oses.
+
+The following will execute the configured commands in order.
+
+```Scala
+// build.sbt
+addCommandAlias("ci", "clean; compile; test; assembly;")
+```
+
+### Cross Build Between Different Scala Versions
+Scala releases (before Scala 3) are not binary compatible with each other. That means you need to rebuild a library in all the supported versions for users to use it. sbt avoids the need to do this manually.
+
+The following will set the default Scala version for this project as Scala 2.12. But you can ask sbt to compile in all supported versions by using the  `+ compile` command.
+
+```Scala
+val scala212 = "2.12.16"
+val scala213 = "2.13.5"
+
+ThisBuild / scalaVersion := scala212
+
+lazy val crossproject = (project in file("crossproject")).settings(
+	crossScalaVersions := List(scala212, scala213)
+)
+```
+
+If you ever publish a library, use `+ compile` to ensure that all supported versions of the library are published.
+
+### sbt Configurations and Options
+sbt has several configuration options passed in on startup. 
+
+You can check the sbt version you're using with `sbt --version`.
+
+You can view all applied sbt options with `sbt --debug`.
+
+You can provide JVM arguments on sbt startup. For example, to increase the heap memory size, use `sbt -v -J-Xmx3600m`.
+
+### sbt Command Aliases With JVM Arguments
+You can create sbt command aliases with JVM arguments passed in.
+
+First, you need to set `fork := true` in `build.sbt`. This ensures that sbt will start a forked JVM and apply the settings.
+
+```Scala
+// build.sbt
+fork := true
+
+addCommandAlias(
+	"runSpecial", 
+	"set ThisBuild/javaOptions += \"-Dport=4567\"; run;"
+)
+```
+
+You can pass multiple JVM options using a `Seq`.
+
+```Scala
+addCommandAlias(
+	"runSpecial",
+	"set ThisBuild/javaOptions ++= Seq(\"-Dport=4567\", \"-Duser=username\"); run;"
+)
+```
+
+## Testing 
+Testing serves as a safety net during refactoring and as code documentation.
+
+Popular testing librares in Scala, include μTest, specs2 and ScalaTest.
+
 ### ScalaTest
-ScalaTest is one of the main testing libraries for Scala. Add it to your library dependencies in `build.sbt`. 
+ScalaTest is one of the main testing libraries for Scala. It has good integrations with build tools such as Ant, Maven and sbt, as well as with mocking libraries such as JMock, EasyMock, Mockito and ScalaMock.
+
+Add it to your library dependencies in `build.sbt`. 
 
 ```Scala
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.11" % Test
@@ -3679,7 +3971,7 @@ class MathUtilsSpec extends FunSpec {
 }
 ```
 
-With ScalaTest, you need to define a class that extends one of its specification classes, such as `org.scalatest.flatspec.AnyFlatSpec` and then seleect one of its matchers, such as `org.scalatest.matchers.should.Matchers`
+With ScalaTest, you need to define a class that extends one of its specification classes, such as `org.scalatest.flatspec.AnyFlatSpec` and then select one of its matchers, such as `org.scalatest.matchers.should.Matchers`
 
 For example, to test a program that computes the frequency of characters in a text.
 
@@ -3749,34 +4041,3 @@ class FrequencyTest extends AnyFlatSpec with Matchers {
 ```
 
 
-### HTTP APIs
-There are multiple external libraries for building HTTP servers with Scala, such as http4s.
-
-With http4s, you link your routes to your business logic through instances of `HttpRoutes`. Each `HttpRoutes` uses partial functions to match an incoming HTTP request and produce a HTTP response together with a side effect, such as an IO read/write or a connection to a third party API. 
-
-A `HttpRoutes[IO]` matches a request and produces a response wrapped in an IO instance to represent possible side effects. Your executable object extends `IOApp` and uses a `BlazeServerBuilder` to bind to a given port and host and to mount multiple instances of `HttpRoutes[IO]` to define the API of a HTTP server using a `fs2.Stream` instance.
-
-`IOApp` is an interface that requires you to define a `run` function.
-
-`BlazeServerBuilder` defines a HTTP server with an address, port, and routes using a stream to process requests. `ExecutionContext.global` provides a thread pool to use while streaming.
-
-`BlazeServerBuilder[IO]` with `bindHttp` provides a port and host. `withHttpApp` attaches a group of routes with a prefix to your server. Finally, `serve` transfors the Blaze definition into a stream that represents your HTTP server.
-
-```Scala
-object DemoApp extends IOApp {
-	private val httpApp = Router(
-		"/" -> PingApi().routes
-	).orNotFound
-	
-	override def run(args: Lst[String]): IO[ExitCode] =
-		stream(args).compile.drain.as(ExitCode.Success)
-	
-	private def stream(args: List[String]): fs2.Stream[IO, ExitCode] =
-		BlazeServerBuilder[IO](ExecutionContext.global)
-		.bindHttp(8000, "0.0.0.0")
-		.withHttpApp(httpApp)
-		.serve
-}
-```
-
-It's a good practice to have a few endpoints to ensure yoour system is responsive and healthy. A `healthCheck` endpoint is useful for monitoring systems, while a `ping` endpoint lets you perform a lightweight request to check that they can successfully communicate with the system. 
